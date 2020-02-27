@@ -42,7 +42,7 @@ class SqlaTransformer(object):
         self.output_dir = output_dir
         self.db_conn_url = db_conn_url
         self.data_dict = {}
-        self.model_dict = {}
+        self.imported_models = []
 
     def create_schema(self):
         """
@@ -63,7 +63,7 @@ class SqlaTransformer(object):
 
         self._import_models()
 
-        if not (self.db_conn_url or self.model_dict):
+        if not (self.db_conn_url or self.imported_models):
             raise RuntimeError(
                 'There are 0 models to generate the PFB file. You must '
                 'provide a DB connection URL that can be used to '
@@ -72,7 +72,7 @@ class SqlaTransformer(object):
             )
 
         pfb_schema = PfbSchemaBuilder(
-            self.model_dict, self.output_dir
+            self.imported_models, self.output_dir
         ).create()
 
         self.logger.info(
@@ -167,13 +167,11 @@ class SqlaTransformer(object):
         self.logger.debug(
             f'Found {len(filepaths)} Python modules:\n{pformat(filepaths)}'
         )
-        # Add the imported modules to a dict
+        # Import the model classes from file
         for fp in filepaths:
-            classes = _import_model_classes_from_file(fp)
-            for cls in classes:
-                self.model_dict[cls.__name__] = cls
+            self.imported_models.extend(_import_model_classes_from_file(fp))
 
         self.logger.info(
-            f'Imported {len(self.model_dict)} SQLAlchemy models:'
-            f'\n{pformat(list(self.model_dict.keys()))}'
+            f'Imported {len(self.imported_models)} SQLAlchemy models:'
+            f'\n{pformat([type(m).__name__] for m in self.imported_models)}'
         )

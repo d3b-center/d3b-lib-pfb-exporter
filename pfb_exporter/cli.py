@@ -6,7 +6,6 @@ import click
 
 
 from pfb_exporter.config import (
-    DEFAULT_TRANFORM_MOD,
     DEFAULT_OUTPUT_DIR,
     DEFAULT_MODELS_PATH
 )

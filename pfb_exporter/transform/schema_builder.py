@@ -17,13 +17,12 @@ import os
 import json
 import logging
 from copy import deepcopy
-from collections import defaultdict
 from pprint import pformat, pprint
 
 from sqlalchemy.inspection import inspect as sqla_inspect
 from sqlalchemy.orm.properties import ColumnProperty
 
-from pfb_exporter.config import DEFAULT_PFB_SCHEMA_FILE
+from pfb_exporter.config import DEFAULT_PFB_SCHEMA_FILE, REL_MODEL_FILE
 
 SQLA_AVRO_TYPE_MAP = {
     'primitive': {
@@ -43,10 +42,12 @@ SQLA_AVRO_TYPE_MAP = {
 
 
 class PfbSchemaBuilder(object):
-    def __init__(self, model_dict, output_dir):
+    def __init__(self, imported_models, output_dir):
         self.logger = logging.getLogger(type(self).__name__)
-        self.model_dict = model_dict
+        self.imported_models = imported_models
         self.output_dir = output_dir
+        self.relational_model = []
+        self.pfb_schema = {}
 
     def create(self):
         """
@@ -62,14 +63,44 @@ class PfbSchemaBuilder(object):
         - See https://avro.apache.org/docs/current/spec.html#schemas
         """
         self.logger.info('Creating PFB schema from SQLAlchemy models ...')
-        model_schema_template = defaultdict(list)
-        pfb_schema = {}
 
-        for model_name, model_cls in self.model_dict.items():
+        self._build_relational_model()
+        self._relational_model_to_pfb_schema()
+        self._write_outputs()
+
+        return self.pfb_schema
+
+    def _build_relational_model(self):
+        """
+        Serialize the SQLAlchemy models into a dictionary that captures
+        a model's name, attributes, types of attributes, and foreign keys
+
+        This is an intermediate form which serves 2 purposes:
+
+        - Make it easier to transform into the PFB schema
+        - Used by pfb_exporter.transform.entity_builder to produce the
+          PFB Metadata object
+        """
+        self.logger.info(
+            'Serializing SQLAlchemy models into the intermediate form'
+        )
+        model_dict_template = {
+            'class': None,
+            'table_name': None,
+            'properties': {},
+            'foreign_keys': {}
+        }
+
+        for model_cls in self.imported_models:
+            model_dict = deepcopy(model_dict_template)
+            model_name = model_cls.__name__
+            model_dict['table_name'] = model_cls.__tablename__
+            model_dict['class'] = model_name
+
             self.logger.info(
-                f'Building schema for {model_name} ...'
+                f'Building model dict for {model_name} ...'
             )
-            model_schema = deepcopy(model_schema_template)
+
             # Inspect model columns and types
             for p in sqla_inspect(model_cls).iterate_properties:
                 if not isinstance(p, ColumnProperty):
@@ -78,76 +109,65 @@ class PfbSchemaBuilder(object):
                 if not hasattr(p, 'columns'):
                     continue
 
-                schema_dict = self._column_obj_to_schema_dict(
+                d = self._column_obj_to_dict(
                     p.key, p.columns[0]
                 )
-                if schema_dict['type'] == 'foreign_key':
-                    model_schema['foreign_keys'] = schema_dict
-                else:
-                    model_schema['attributes'].append(schema_dict)
+                model_dict['foreign_keys'].update(d.pop('foreign_key', {}))
+                model_dict['properties'].update(d)
 
-            self.logger.debug(f'{pformat(model_schema)}')
-            pfb_schema[model_cls.__tablename__] = model_schema
+            self.logger.debug(f'\n{pformat(model_dict)}')
 
-        self._write_pfb_schema(pfb_schema)
+            self.relational_model.append(model_dict)
 
-        return pfb_schema
+    def _relational_model_to_pfb_schema(self):
+        pass
 
-    def _column_obj_to_schema_dict(self, key, column_obj):
+    def _column_obj_to_dict(self, key, column_obj):
         """
-        Convert a SQLAlchemy Column object to a schema dict
+        Convert a SQLAlchemy Column object to a dict
         """
+        column_dict = {}
+
+        # Get SQLAlchemy column type
+        ctype = type(column_obj.type).__name__
+        column_dict[key] = {
+            'type': ctype,
+            'nullable': column_obj.nullable,
+            'default': column_obj.default
+        }
         # Check if foreign key
         if column_obj.foreign_keys:
             fkname = column_obj.foreign_keys.pop().target_fullname
-            return {
-                'relation': fkname.split('.')[0],
-                'name': key,
-                'type': 'foreign_key'
-            }
+            column_dict.update({
+                'foreign_key': {fkname: fkname.split('.')[0]}
+            })
 
-        # Convert SQLAlchemy column type to avro type
-        stype = type(column_obj.type).__name__
+        return column_dict
 
-        # Get avro primitive type
-        ptype = SQLA_AVRO_TYPE_MAP['primitive'].get(stype)
-        if not ptype:
-            self.logger.warning(
-                f'⚠️ Could not find avro type for {key}, '
-                f'SQLAlchemy type: {stype}'
-            )
-        attr_dict = {'name': key, 'type': ptype}
-
-        # Get avro logical type if applicable
-        ltype = SQLA_AVRO_TYPE_MAP['logical'].get(stype)
-        if ltype:
-            attr_dict.update({'logicalType': ltype})
-
-        # Get default value for attr
-        # if column_obj.default:
-        #     attr_dict.update({'default': column_obj.default})
-
-        if column_obj.nullable:
-            attr_dict['type'] = ['null', attr_dict['type']]
-
-        return attr_dict
-
-    def _write_pfb_schema(self, data):
+    def _write_outputs(self):
         """
-        Write the Gen3 data dictionary created by self.transform to the
-        output_dir as a set of yaml files. There will be one YAML file per
-        entity
-
-        :param data: data needed to write out the Gen3 data dict files
-        :type data: dict
-        :returns: path to directory containing data dict files
+        Write the PFB Schema dict to a JSON file
+        Write the relational model dict to a JSON file
         """
-        self.pfb_schema = os.path.join(
+        self.pfb_schema_file = os.path.join(
             self.output_dir, DEFAULT_PFB_SCHEMA_FILE
         )
-        if data:
+        self.rel_model_file = os.path.join(
+            self.output_dir, REL_MODEL_FILE
+        )
+        if self.pfb_schema:
             self.logger.info(
-                f'✏️ Writing PFB schema to {self.pfb_schema}'
+                f'✏️ Writing PFB schema to {self.pfb_schema_file}'
             )
-            with open(self.pfb_schema, 'w') as json_file:
-                json.dump(data, json_file, indent=4, sort_keys=True)
+            with open(self.pfb_schema_file, 'w') as json_file:
+                json.dump(self.pfb_schema, json_file, indent=4, sort_keys=True)
+
+        if self.relational_model:
+            self.logger.info(
+                '✏️ Writing relational model dict to '
+                f'{self.rel_model_file}'
+            )
+            with open(self.rel_model_file, 'w') as json_file:
+                json.dump(
+                    self.relational_model, json_file, indent=4, sort_keys=True
+                )
