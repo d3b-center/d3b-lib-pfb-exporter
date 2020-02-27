@@ -1,0 +1,822 @@
+{
+    "avro.codec": "null",
+    "avro.schema": {
+        "fields": [
+            {
+                "default": null,
+                "name": "id",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "name",
+                "type": "string"
+            },
+            {
+                "name": "object",
+                "type": [
+                    {
+                        "fields": [
+                            {
+                                "name": "nodes",
+                                "type": {
+                                    "items": {
+                                        "fields": [
+                                            {
+                                                "name": "name",
+                                                "type": "string"
+                                            },
+                                            {
+                                                "name": "ontology_reference",
+                                                "type": "string"
+                                            },
+                                            {
+                                                "name": "values",
+                                                "type": {
+                                                    "type": "map",
+                                                    "values": "string"
+                                                }
+                                            },
+                                            {
+                                                "name": "links",
+                                                "type": {
+                                                    "items": {
+                                                        "fields": [
+                                                            {
+                                                                "name": "multiplicity",
+                                                                "type": {
+                                                                    "name": "Multiplicity",
+                                                                    "symbols": [
+                                                                        "ONE_TO_ONE",
+                                                                        "ONE_TO_MANY",
+                                                                        "MANY_TO_ONE",
+                                                                        "MANY_TO_MANY"
+                                                                    ],
+                                                                    "type": "enum"
+                                                                }
+                                                            },
+                                                            {
+                                                                "name": "dst",
+                                                                "type": "string"
+                                                            },
+                                                            {
+                                                                "name": "name",
+                                                                "type": "string"
+                                                            }
+                                                        ],
+                                                        "name": "Link",
+                                                        "type": "record"
+                                                    },
+                                                    "type": "array"
+                                                }
+                                            },
+                                            {
+                                                "name": "properties",
+                                                "type": {
+                                                    "items": {
+                                                        "fields": [
+                                                            {
+                                                                "name": "name",
+                                                                "type": "string"
+                                                            },
+                                                            {
+                                                                "name": "ontology_reference",
+                                                                "type": "string"
+                                                            },
+                                                            {
+                                                                "name": "values",
+                                                                "type": {
+                                                                    "type": "map",
+                                                                    "values": "string"
+                                                                }
+                                                            }
+                                                        ],
+                                                        "name": "Property",
+                                                        "type": "record"
+                                                    },
+                                                    "type": "array"
+                                                }
+                                            }
+                                        ],
+                                        "name": "Node",
+                                        "type": "record"
+                                    },
+                                    "type": "array"
+                                }
+                            },
+                            {
+                                "name": "misc",
+                                "type": {
+                                    "type": "map",
+                                    "values": "string"
+                                }
+                            }
+                        ],
+                        "name": "Metadata",
+                        "type": "record"
+                    },
+                    {
+                        "fields": [
+                            {
+                                "default": null,
+                                "name": "created_datetime",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
+                            },
+                            {
+                                "default": null,
+                                "name": "updated_datetime",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
+                            },
+                            {
+                                "default": null,
+                                "doc": "String representing release name.\n",
+                                "name": "name",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
+                            },
+                            {
+                                "default": null,
+                                "doc": "The number identifying the major version.\n",
+                                "name": "major_version",
+                                "type": [
+                                    "null",
+                                    "long"
+                                ]
+                            },
+                            {
+                                "default": null,
+                                "doc": "The number identifying the minor version.\n",
+                                "name": "minor_version",
+                                "type": [
+                                    "null",
+                                    "long"
+                                ]
+                            },
+                            {
+                                "default": null,
+                                "name": "release_date",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
+                            },
+                            {
+                                "default": false,
+                                "doc": "Indicates if it is the current release.\n",
+                                "name": "released",
+                                "type": [
+                                    "boolean",
+                                    "null"
+                                ]
+                            }
+                        ],
+                        "name": "data_release",
+                        "type": "record"
+                    },
+                    {
+                        "fields": [
+                            {
+                                "default": null,
+                                "name": "schema_version",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
+                            }
+                        ],
+                        "name": "root",
+                        "type": "record"
+                    },
+                    {
+                        "fields": [
+                            {
+                                "default": null,
+                                "doc": "Name given to the family by contributor",
+                                "name": "external_id",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
+                            },
+                            {
+                                "default": "validated",
+                                "name": "state",
+                                "type": [
+                                    {
+                                        "name": "family_family_state_0",
+                                        "symbols": [
+                                            "validated",
+                                            "submitted",
+                                            "released"
+                                        ],
+                                        "type": "enum"
+                                    },
+                                    {
+                                        "name": "family_family_state_1",
+                                        "symbols": [
+                                            "uploading",
+                                            "uploaded",
+                                            "md5summing",
+                                            "md5summed",
+                                            "validating",
+                                            "error",
+                                            "invalid",
+                                            "suppressed",
+                                            "redacted",
+                                            "live"
+                                        ],
+                                        "type": "enum"
+                                    },
+                                    "null"
+                                ]
+                            },
+                            {
+                                "default": null,
+                                "name": "updated_datetime",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
+                            },
+                            {
+                                "default": null,
+                                "name": "created_datetime",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
+                            },
+                            {
+                                "default": null,
+                                "name": "project_id",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
+                            },
+                            {
+                                "default": null,
+                                "name": "kf_id",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
+                            },
+                            {
+                                "default": null,
+                                "doc": "The identifier assigned by the submitter.",
+                                "name": "submitter_id",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
+                            }
+                        ],
+                        "name": "family",
+                        "type": "record"
+                    },
+                    {
+                        "fields": [
+                            {
+                                "default": null,
+                                "doc": "The dbgap accession number provided for the program.",
+                                "name": "dbgap_accession_number",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
+                            },
+                            {
+                                "default": null,
+                                "doc": "Full name/title of the program.",
+                                "name": "name",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
+                            }
+                        ],
+                        "name": "program",
+                        "type": "record"
+                    },
+                    {
+                        "fields": [
+                            {
+                                "default": null,
+                                "doc": "Project code",
+                                "name": "code",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
+                            },
+                            {
+                                "default": null,
+                                "doc": "Link to attribution prose provided by dbGaP",
+                                "name": "attribution",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
+                            },
+                            {
+                                "default": null,
+                                "doc": "Display name or title for the project",
+                                "name": "name",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
+                            },
+                            {
+                                "default": null,
+                                "doc": "Name of organization which governs data access",
+                                "name": "data_access_authority",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
+                            },
+                            {
+                                "default": null,
+                                "doc": "Release status of the study.",
+                                "name": "release_status",
+                                "type": [
+                                    "null",
+                                    {
+                                        "name": "project_release_status",
+                                        "symbols": [
+                                            "Pending",
+                                            "Waiting",
+                                            "Running",
+                                            "Staged",
+                                            "Publishing",
+                                            "Published",
+                                            "Failed",
+                                            "Canceled"
+                                        ],
+                                        "type": "enum"
+                                    }
+                                ]
+                            },
+                            {
+                                "default": null,
+                                "doc": "Tracks a Project's intended release date.",
+                                "name": "intended_release_date",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
+                            },
+                            {
+                                "default": false,
+                                "doc": "A project can only be released by the user when `releasable` is true.\n",
+                                "name": "releasable",
+                                "type": [
+                                    "boolean",
+                                    "null"
+                                ]
+                            },
+                            {
+                                "default": false,
+                                "doc": "To release a project is to include all submitted\nentities in the next release.\n",
+                                "name": "released",
+                                "type": [
+                                    "boolean",
+                                    "null"
+                                ]
+                            },
+                            {
+                                "default": "open",
+                                "doc": "The possible states a project can be in.  All but `open` are\nequivalent to some type of locked state.\n",
+                                "name": "state",
+                                "type": [
+                                    {
+                                        "name": "project_state",
+                                        "symbols": [
+                                            "open",
+                                            "review",
+                                            "submitted",
+                                            "processing",
+                                            "closed",
+                                            "legacy"
+                                        ],
+                                        "type": "enum"
+                                    },
+                                    "null"
+                                ]
+                            },
+                            {
+                                "default": null,
+                                "doc": "dbGaP version",
+                                "name": "version",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
+                            },
+                            {
+                                "default": null,
+                                "doc": "Is the project open or restricted?",
+                                "name": "availability_type",
+                                "type": [
+                                    "null",
+                                    {
+                                        "name": "project_availability_type",
+                                        "symbols": [
+                                            "Open",
+                                            "Restricted"
+                                        ],
+                                        "type": "enum"
+                                    }
+                                ]
+                            },
+                            {
+                                "default": null,
+                                "doc": "The dbgap accession number for the project.",
+                                "name": "dbgap_accession_number",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
+                            }
+                        ],
+                        "name": "project",
+                        "type": "record"
+                    },
+                    {
+                        "fields": [
+                            {
+                                "default": null,
+                                "doc": "Type of the consent participant belongs to",
+                                "name": "consent_type",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
+                            },
+                            {
+                                "default": null,
+                                "name": "disease_type",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
+                            },
+                            {
+                                "default": null,
+                                "name": "lost_to_followup",
+                                "type": [
+                                    "null",
+                                    {
+                                        "name": "participant_lost_to_followup",
+                                        "symbols": [
+                                            "Yes",
+                                            "No"
+                                        ],
+                                        "type": "enum"
+                                    }
+                                ]
+                            },
+                            {
+                                "default": null,
+                                "name": "index_date",
+                                "type": [
+                                    "null",
+                                    {
+                                        "name": "participant_index_date",
+                                        "symbols": [
+                                            "Diagnosis",
+                                            "First_20_Patient_20_Visit",
+                                            "Study_20_Enrollment"
+                                        ],
+                                        "type": "enum"
+                                    }
+                                ]
+                            },
+                            {
+                                "default": null,
+                                "name": "days_to_lost_to_followup",
+                                "type": [
+                                    "null",
+                                    "long"
+                                ]
+                            },
+                            {
+                                "default": null,
+                                "doc": "Id for the participants grouped by family",
+                                "name": "family_id",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
+                            },
+                            {
+                                "default": null,
+                                "name": "primary_site",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
+                            },
+                            {
+                                "default": null,
+                                "doc": "Denotes whether participant is proband of study",
+                                "name": "is_proband",
+                                "type": [
+                                    "null",
+                                    "boolean"
+                                ]
+                            },
+                            {
+                                "default": null,
+                                "name": "external_id",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
+                            },
+                            {
+                                "default": "validated",
+                                "name": "state",
+                                "type": [
+                                    {
+                                        "name": "participant_participant_state_0",
+                                        "symbols": [
+                                            "validated",
+                                            "submitted",
+                                            "released"
+                                        ],
+                                        "type": "enum"
+                                    },
+                                    {
+                                        "name": "participant_participant_state_1",
+                                        "symbols": [
+                                            "uploading",
+                                            "uploaded",
+                                            "md5summing",
+                                            "md5summed",
+                                            "validating",
+                                            "error",
+                                            "invalid",
+                                            "suppressed",
+                                            "redacted",
+                                            "live"
+                                        ],
+                                        "type": "enum"
+                                    },
+                                    "null"
+                                ]
+                            },
+                            {
+                                "default": null,
+                                "name": "updated_datetime",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
+                            },
+                            {
+                                "default": null,
+                                "name": "created_datetime",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
+                            },
+                            {
+                                "default": null,
+                                "name": "project_id",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
+                            },
+                            {
+                                "default": null,
+                                "name": "kf_id",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
+                            },
+                            {
+                                "default": null,
+                                "doc": "The identifier assigned by the submitter.",
+                                "name": "submitter_id",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
+                            }
+                        ],
+                        "name": "participant",
+                        "type": "record"
+                    }
+                ]
+            },
+            {
+                "default": [],
+                "name": "relations",
+                "type": {
+                    "items": {
+                        "fields": [
+                            {
+                                "name": "dst_id",
+                                "type": "string"
+                            },
+                            {
+                                "name": "dst_name",
+                                "type": "string"
+                            }
+                        ],
+                        "name": "Relation",
+                        "type": "record"
+                    },
+                    "type": "array"
+                }
+            }
+        ],
+        "name": "Entity",
+        "type": "record"
+    },
+    "data": [
+        {
+            "id": null,
+            "name": "Metadata",
+            "object": {
+                "misc": {},
+                "nodes": [
+                    {
+                        "links": [
+                            {
+                                "dst": "root",
+                                "multiplicity": "MANY_TO_ONE",
+                                "name": "roots"
+                            }
+                        ],
+                        "name": "data_release",
+                        "ontology_reference": "",
+                        "properties": [],
+                        "values": {}
+                    },
+                    {
+                        "links": [],
+                        "name": "root",
+                        "ontology_reference": "",
+                        "properties": [],
+                        "values": {}
+                    },
+                    {
+                        "links": [
+                            {
+                                "dst": "project",
+                                "multiplicity": "MANY_TO_ONE",
+                                "name": "projects"
+                            }
+                        ],
+                        "name": "family",
+                        "ontology_reference": "",
+                        "properties": [],
+                        "values": {}
+                    },
+                    {
+                        "links": [],
+                        "name": "program",
+                        "ontology_reference": "",
+                        "properties": [],
+                        "values": {}
+                    },
+                    {
+                        "links": [
+                            {
+                                "dst": "program",
+                                "multiplicity": "MANY_TO_ONE",
+                                "name": "programs"
+                            }
+                        ],
+                        "name": "project",
+                        "ontology_reference": "",
+                        "properties": [],
+                        "values": {}
+                    },
+                    {
+                        "links": [
+                            {
+                                "dst": "project",
+                                "multiplicity": "MANY_TO_ONE",
+                                "name": "projects"
+                            },
+                            {
+                                "dst": "family",
+                                "multiplicity": "MANY_TO_ONE",
+                                "name": "families"
+                            }
+                        ],
+                        "name": "participant",
+                        "ontology_reference": "",
+                        "properties": [
+                            {
+                                "name": "disease_type",
+                                "ontology_reference": "Disease Type",
+                                "values": {}
+                            },
+                            {
+                                "name": "lost_to_followup",
+                                "ontology_reference": "Patient Lost Follow-Up Ind-2",
+                                "values": {
+                                    "cde_id": "61333",
+                                    "cde_version": "3",
+                                    "source": "caDSR",
+                                    "term_url": "https://cdebrowser.nci.nih.gov/cdebrowserClient/cdeBrowser.html#/search?publicId=61333&version=3.0"
+                                }
+                            },
+                            {
+                                "name": "index_date",
+                                "ontology_reference": "",
+                                "values": {}
+                            },
+                            {
+                                "name": "days_to_lost_to_followup",
+                                "ontology_reference": "",
+                                "values": {}
+                            },
+                            {
+                                "name": "primary_site",
+                                "ontology_reference": "Primary Site",
+                                "values": {}
+                            }
+                        ],
+                        "values": {}
+                    }
+                ]
+            },
+            "relations": []
+        },
+        {
+            "id": "FA_F1",
+            "name": "family",
+            "object": {
+                "created_datetime": null,
+                "external_id": "fam1",
+                "kf_id": "FA_F1",
+                "project_id": "kidsfirst-drc",
+                "state": "validated",
+                "submitter_id": "FA_F1",
+                "updated_datetime": null
+            },
+            "relations": []
+        },
+        {
+            "id": "participant_hunkers_bathymetric",
+            "name": "participant",
+            "object": {
+                "consent_type": "unsafety_ministerialism",
+                "created_datetime": null,
+                "days_to_lost_to_followup": 20,
+                "disease_type": "halibuter_Imer",
+                "external_id": "Romagnol_Dianil",
+                "family_id": "FA_F1",
+                "index_date": "Diagnosis",
+                "is_proband": true,
+                "kf_id": "PT_01",
+                "lost_to_followup": "No",
+                "primary_site": "pickleworm_interminable",
+                "project_id": "kidsfirst-drc",
+                "state": "validated",
+                "submitter_id": "participant_hunkers_bathymetric",
+                "updated_datetime": null
+            },
+            "relations": []
+        },
+        {
+            "id": "drc",
+            "name": "project",
+            "object": {
+                "attribution": "fordone_unpunctated",
+                "availability_type": "Open",
+                "code": "drc",
+                "data_access_authority": "blowgun_nonlicentiate",
+                "dbgap_accession_number": "phs-drc",
+                "intended_release_date": null,
+                "name": "clacket_coapprehend",
+                "releasable": false,
+                "release_status": "Running",
+                "released": false,
+                "state": "open",
+                "version": "Philetaerus_soudagur"
+            },
+            "relations": []
+        }
+    ]
+}

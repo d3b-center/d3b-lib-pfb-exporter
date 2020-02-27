@@ -1,0 +1,18 @@
+{
+    "fields": [
+        {
+            "name": "external_id",
+            "type": "string"
+        },
+        {
+            "name": "gender",
+            "type": [
+                "null",
+                "string"
+            ]
+        }
+    ],
+    "name": "Participant",
+    "namespace": "kf-vanilla.avro",
+    "type": "record"
+}
