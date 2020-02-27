@@ -1,0 +1,5 @@
+jupyter
+avro==1.9.2
+PyYAML>=5.1.2
+-e git+git@github.com:uc-cdis/data-simulator.git#egg=data_simulator
+-e git+git@github.com:uc-cdis/pypfb.git#egg=pypfb
