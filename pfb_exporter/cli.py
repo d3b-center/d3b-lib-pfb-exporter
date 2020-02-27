@@ -35,15 +35,6 @@ def common_args_options(func):
         default=DEFAULT_OUTPUT_DIR,
         type=click.Path(exists=False, file_okay=False, dir_okay=True))(func)
 
-    # Path to Python transform module
-    func = click.option(
-        '--transform_module', '-t',
-        help='Path to the Python module used to transform from a '
-        'relational model to the Gen3 data dictionary',
-        show_default=True,
-        default=DEFAULT_TRANFORM_MOD,
-        type=click.Path(exists=True, file_okay=True, dir_okay=False))(func)
-
     # Path to dir or file where models reside
     func = click.option(
         '--models_filepath', '-m',
@@ -68,7 +59,7 @@ def common_args_options(func):
 @click.command()
 @common_args_options
 def export(
-    data_dir, database_url, models_filepath, transform_module, output_dir
+    data_dir, database_url, models_filepath, output_dir
 ):
     """
     Export relational data to PFB (Portable Bioinformatics Format) file
@@ -80,14 +71,14 @@ def export(
         conform to the SQLAlchemy models.
     """
     PfbBuilder(
-        data_dir, database_url, models_filepath, transform_module, output_dir,
+        data_dir, database_url, models_filepath, output_dir,
     ).export()
 
 
 @click.command('create_schema')
 @common_args_options
 def create_schema(
-    data_dir, database_url, models_filepath, transform_module, output_dir
+    data_dir, database_url, models_filepath, output_dir
 ):
     """
     Transform the relational model into a PFB Schema, which is required to
@@ -101,7 +92,7 @@ def create_schema(
     """
 
     PfbBuilder(
-        '', database_url, models_filepath, transform_module, output_dir
+        '', database_url, models_filepath, output_dir
     ).export(output_to_pfb=False)
 
 

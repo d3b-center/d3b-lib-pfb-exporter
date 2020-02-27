@@ -29,8 +29,7 @@ import logging
 from pfb_exporter.config import (
     DEFAULT_OUTPUT_DIR,
     DEFAULT_PFB_FILE,
-    DEFAULT_MODELS_PATH,
-    DEFAULT_TRANFORM_MOD
+    DEFAULT_MODELS_PATH
 )
 from pfb_exporter.utils import setup_logger
 from pfb_exporter.transform.sqla import SqlaTransformer
@@ -43,7 +42,6 @@ class PfbBuilder(object):
         data_dir,
         db_conn_url=None,
         models_filepath=DEFAULT_MODELS_PATH,
-        transform_module_filepath=DEFAULT_TRANFORM_MOD,
         output_dir=DEFAULT_OUTPUT_DIR
     ):
         setup_logger(os.path.join(output_dir, 'logs'))
