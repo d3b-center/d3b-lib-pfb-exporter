@@ -1,0 +1,6 @@
+avro==1.9.2
+PyYAML>=5.1.2
+Click>=7.0
+sqlacodegen
+psycopg2
+SQLAlchemy
