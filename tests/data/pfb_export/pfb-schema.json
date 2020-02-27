@@ -1,0 +1,1566 @@
+{
+    "alias_group": {
+        "attributes": [
+            {
+                "logicalType": "uuid",
+                "name": "uuid",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "created_at",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "modified_at",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "kf_id",
+                "type": "string"
+            },
+            {
+                "name": "visible",
+                "type": "boolean"
+            }
+        ]
+    },
+    "biospecimen": {
+        "attributes": [
+            {
+                "logicalType": "uuid",
+                "name": "uuid",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "created_at",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "modified_at",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "external_sample_id",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "external_aliquot_id",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "source_text_tissue_type",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "composition",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "source_text_anatomical_site",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "age_at_event_days",
+                "type": [
+                    "null",
+                    "int"
+                ]
+            },
+            {
+                "name": "source_text_tumor_descriptor",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "shipment_origin",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "analyte_type",
+                "type": "string"
+            },
+            {
+                "name": "concentration_mg_per_ml",
+                "type": [
+                    "null",
+                    "float"
+                ]
+            },
+            {
+                "name": "volume_ul",
+                "type": [
+                    "null",
+                    "float"
+                ]
+            },
+            {
+                "name": "shipment_date",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "uberon_id_anatomical_site",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "ncit_id_tissue_type",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "ncit_id_anatomical_site",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "spatial_descriptor",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "kf_id",
+                "type": "string"
+            },
+            {
+                "name": "dbgap_consent_code",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "visible",
+                "type": "boolean"
+            },
+            {
+                "name": "consent_type",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "method_of_sample_procurement",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "duo_ids",
+                "type": [
+                    "null",
+                    null
+                ]
+            }
+        ],
+        "foreign_keys": {
+            "name": "sequencing_center_id",
+            "relation": "sequencing_center",
+            "type": "foreign_key"
+        }
+    },
+    "biospecimen_diagnosis": {
+        "attributes": [
+            {
+                "logicalType": "uuid",
+                "name": "uuid",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "created_at",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "modified_at",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "kf_id",
+                "type": "string"
+            },
+            {
+                "name": "visible",
+                "type": "boolean"
+            },
+            {
+                "name": "external_id",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            }
+        ],
+        "foreign_keys": {
+            "name": "biospecimen_id",
+            "relation": "biospecimen",
+            "type": "foreign_key"
+        }
+    },
+    "biospecimen_genomic_file": {
+        "attributes": [
+            {
+                "logicalType": "uuid",
+                "name": "uuid",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "created_at",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "modified_at",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "kf_id",
+                "type": "string"
+            },
+            {
+                "name": "visible",
+                "type": "boolean"
+            },
+            {
+                "name": "external_id",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            }
+        ],
+        "foreign_keys": {
+            "name": "biospecimen_id",
+            "relation": "biospecimen",
+            "type": "foreign_key"
+        }
+    },
+    "cavatica_app": {
+        "attributes": [
+            {
+                "logicalType": "uuid",
+                "name": "uuid",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "created_at",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "modified_at",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "external_cavatica_app_id",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "name",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "revision",
+                "type": [
+                    "null",
+                    "int"
+                ]
+            },
+            {
+                "name": "github_commit_url",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "kf_id",
+                "type": "string"
+            },
+            {
+                "name": "visible",
+                "type": "boolean"
+            }
+        ]
+    },
+    "diagnosis": {
+        "attributes": [
+            {
+                "logicalType": "uuid",
+                "name": "uuid",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "created_at",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "modified_at",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "external_id",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "source_text_diagnosis",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "diagnosis_category",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "source_text_tumor_location",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "age_at_event_days",
+                "type": [
+                    "null",
+                    "int"
+                ]
+            },
+            {
+                "name": "mondo_id_diagnosis",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "icd_id_diagnosis",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "uberon_id_tumor_location",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "ncit_id_diagnosis",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "spatial_descriptor",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "kf_id",
+                "type": "string"
+            },
+            {
+                "name": "visible",
+                "type": "boolean"
+            }
+        ],
+        "foreign_keys": {
+            "name": "participant_id",
+            "relation": "participant",
+            "type": "foreign_key"
+        }
+    },
+    "family": {
+        "attributes": [
+            {
+                "logicalType": "uuid",
+                "name": "uuid",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "created_at",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "modified_at",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "external_id",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "kf_id",
+                "type": "string"
+            },
+            {
+                "name": "visible",
+                "type": "boolean"
+            },
+            {
+                "name": "family_type",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            }
+        ]
+    },
+    "family_relationship": {
+        "attributes": [
+            {
+                "logicalType": "uuid",
+                "name": "uuid",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "created_at",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "modified_at",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "external_id",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "participant1_to_participant2_relation",
+                "type": "string"
+            },
+            {
+                "name": "participant2_to_participant1_relation",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "kf_id",
+                "type": "string"
+            },
+            {
+                "name": "visible",
+                "type": "boolean"
+            },
+            {
+                "name": "source_text_notes",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            }
+        ],
+        "foreign_keys": {
+            "name": "participant2_id",
+            "relation": "participant",
+            "type": "foreign_key"
+        }
+    },
+    "genomic_file": {
+        "attributes": [
+            {
+                "logicalType": "uuid",
+                "name": "uuid",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "logicalType": "uuid",
+                "name": "latest_did",
+                "type": "string"
+            },
+            {
+                "name": "created_at",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "modified_at",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "external_id",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "data_type",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "file_format",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "is_harmonized",
+                "type": [
+                    "null",
+                    "boolean"
+                ]
+            },
+            {
+                "name": "reference_genome",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "controlled_access",
+                "type": [
+                    "null",
+                    "boolean"
+                ]
+            },
+            {
+                "name": "availability",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "kf_id",
+                "type": "string"
+            },
+            {
+                "name": "visible",
+                "type": "boolean"
+            },
+            {
+                "name": "paired_end",
+                "type": [
+                    "null",
+                    "int"
+                ]
+            }
+        ]
+    },
+    "investigator": {
+        "attributes": [
+            {
+                "logicalType": "uuid",
+                "name": "uuid",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "created_at",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "modified_at",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "external_id",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "name",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "institution",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "kf_id",
+                "type": "string"
+            },
+            {
+                "name": "visible",
+                "type": "boolean"
+            }
+        ]
+    },
+    "outcome": {
+        "attributes": [
+            {
+                "logicalType": "uuid",
+                "name": "uuid",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "created_at",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "modified_at",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "external_id",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "vital_status",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "disease_related",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "age_at_event_days",
+                "type": [
+                    "null",
+                    "int"
+                ]
+            },
+            {
+                "name": "kf_id",
+                "type": "string"
+            },
+            {
+                "name": "visible",
+                "type": "boolean"
+            }
+        ],
+        "foreign_keys": {
+            "name": "participant_id",
+            "relation": "participant",
+            "type": "foreign_key"
+        }
+    },
+    "participant": {
+        "attributes": [
+            {
+                "logicalType": "uuid",
+                "name": "uuid",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "created_at",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "modified_at",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "external_id",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "is_proband",
+                "type": [
+                    "null",
+                    "boolean"
+                ]
+            },
+            {
+                "name": "race",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "ethnicity",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "gender",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "kf_id",
+                "type": "string"
+            },
+            {
+                "name": "visible",
+                "type": "boolean"
+            },
+            {
+                "name": "affected_status",
+                "type": [
+                    "null",
+                    "boolean"
+                ]
+            },
+            {
+                "name": "diagnosis_category",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "taxonomy",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            }
+        ],
+        "foreign_keys": {
+            "name": "alias_group_id",
+            "relation": "alias_group",
+            "type": "foreign_key"
+        }
+    },
+    "phenotype": {
+        "attributes": [
+            {
+                "logicalType": "uuid",
+                "name": "uuid",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "created_at",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "modified_at",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "external_id",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "source_text_phenotype",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "hpo_id_phenotype",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "snomed_id_phenotype",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "observed",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "age_at_event_days",
+                "type": [
+                    "null",
+                    "int"
+                ]
+            },
+            {
+                "name": "kf_id",
+                "type": "string"
+            },
+            {
+                "name": "visible",
+                "type": "boolean"
+            }
+        ],
+        "foreign_keys": {
+            "name": "participant_id",
+            "relation": "participant",
+            "type": "foreign_key"
+        }
+    },
+    "read_group": {
+        "attributes": [
+            {
+                "logicalType": "uuid",
+                "name": "uuid",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "created_at",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "modified_at",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "external_id",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "flow_cell",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "lane_number",
+                "type": [
+                    "null",
+                    "float"
+                ]
+            },
+            {
+                "name": "quality_scale",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "kf_id",
+                "type": "string"
+            },
+            {
+                "name": "visible",
+                "type": "boolean"
+            }
+        ]
+    },
+    "read_group_genomic_file": {
+        "attributes": [
+            {
+                "logicalType": "uuid",
+                "name": "uuid",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "created_at",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "modified_at",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "visible",
+                "type": "boolean"
+            },
+            {
+                "name": "kf_id",
+                "type": "string"
+            },
+            {
+                "name": "external_id",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            }
+        ],
+        "foreign_keys": {
+            "name": "genomic_file_id",
+            "relation": "genomic_file",
+            "type": "foreign_key"
+        }
+    },
+    "sequencing_center": {
+        "attributes": [
+            {
+                "logicalType": "uuid",
+                "name": "uuid",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "created_at",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "modified_at",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "external_id",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "name",
+                "type": "string"
+            },
+            {
+                "name": "kf_id",
+                "type": "string"
+            },
+            {
+                "name": "visible",
+                "type": "boolean"
+            }
+        ]
+    },
+    "sequencing_experiment": {
+        "attributes": [
+            {
+                "logicalType": "uuid",
+                "name": "uuid",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "created_at",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "modified_at",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "external_id",
+                "type": "string"
+            },
+            {
+                "name": "experiment_date",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "experiment_strategy",
+                "type": "string"
+            },
+            {
+                "name": "library_name",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "library_strand",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "is_paired_end",
+                "type": "boolean"
+            },
+            {
+                "name": "platform",
+                "type": "string"
+            },
+            {
+                "name": "instrument_model",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "max_insert_size",
+                "type": [
+                    "null",
+                    "int"
+                ]
+            },
+            {
+                "name": "mean_insert_size",
+                "type": [
+                    "null",
+                    "float"
+                ]
+            },
+            {
+                "name": "mean_depth",
+                "type": [
+                    "null",
+                    "float"
+                ]
+            },
+            {
+                "name": "total_reads",
+                "type": [
+                    "null",
+                    "int"
+                ]
+            },
+            {
+                "name": "mean_read_length",
+                "type": [
+                    "null",
+                    "float"
+                ]
+            },
+            {
+                "name": "kf_id",
+                "type": "string"
+            },
+            {
+                "name": "visible",
+                "type": "boolean"
+            },
+            {
+                "name": "library_prep",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "library_selection",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            }
+        ],
+        "foreign_keys": {
+            "name": "sequencing_center_id",
+            "relation": "sequencing_center",
+            "type": "foreign_key"
+        }
+    },
+    "sequencing_experiment_genomic_file": {
+        "attributes": [
+            {
+                "logicalType": "uuid",
+                "name": "uuid",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "created_at",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "modified_at",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "visible",
+                "type": "boolean"
+            },
+            {
+                "name": "external_id",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "kf_id",
+                "type": "string"
+            }
+        ],
+        "foreign_keys": {
+            "name": "genomic_file_id",
+            "relation": "genomic_file",
+            "type": "foreign_key"
+        }
+    },
+    "study": {
+        "attributes": [
+            {
+                "logicalType": "uuid",
+                "name": "uuid",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "created_at",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "modified_at",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "data_access_authority",
+                "type": "string"
+            },
+            {
+                "name": "external_id",
+                "type": "string"
+            },
+            {
+                "name": "version",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "name",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "short_name",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "attribution",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "release_status",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "kf_id",
+                "type": "string"
+            },
+            {
+                "name": "visible",
+                "type": "boolean"
+            },
+            {
+                "name": "study_code",
+                "type": "string"
+            }
+        ],
+        "foreign_keys": {
+            "name": "investigator_id",
+            "relation": "investigator",
+            "type": "foreign_key"
+        }
+    },
+    "study_file": {
+        "attributes": [
+            {
+                "logicalType": "uuid",
+                "name": "uuid",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "logicalType": "uuid",
+                "name": "latest_did",
+                "type": "string"
+            },
+            {
+                "name": "created_at",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "modified_at",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "external_id",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "availability",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "data_type",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "file_format",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "kf_id",
+                "type": "string"
+            },
+            {
+                "name": "visible",
+                "type": "boolean"
+            }
+        ],
+        "foreign_keys": {
+            "name": "study_id",
+            "relation": "study",
+            "type": "foreign_key"
+        }
+    },
+    "task": {
+        "attributes": [
+            {
+                "logicalType": "uuid",
+                "name": "uuid",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "created_at",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "modified_at",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "logicalType": "uuid",
+                "name": "external_task_id",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "name",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "kf_id",
+                "type": "string"
+            },
+            {
+                "name": "visible",
+                "type": "boolean"
+            }
+        ],
+        "foreign_keys": {
+            "name": "cavatica_app_id",
+            "relation": "cavatica_app",
+            "type": "foreign_key"
+        }
+    },
+    "task_genomic_file": {
+        "attributes": [
+            {
+                "logicalType": "uuid",
+                "name": "uuid",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "created_at",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "modified_at",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            {
+                "name": "is_input",
+                "type": "boolean"
+            },
+            {
+                "name": "kf_id",
+                "type": "string"
+            },
+            {
+                "name": "visible",
+                "type": "boolean"
+            }
+        ],
+        "foreign_keys": {
+            "name": "task_id",
+            "relation": "task",
+            "type": "foreign_key"
+        }
+    }
+}
