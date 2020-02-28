@@ -3,9 +3,7 @@
 Transform and export data from a relational database into a
 PFB (Portable Format for Bioinformatics) file.
 
-A PFB file is an Avro file containing a schema and data that originally came
-from a relational database but has transformed into a graph structure suitable
-for capturing and reconstructing relational data.
+A PFB file is special kind of Avro file, suitable for capturing and reconstructing relational data. Read Background for more information.
 
 ## Quickstart
 
@@ -37,40 +35,39 @@ $ pip install -r dev-requirements.txt
 # Background
 
 ## What is an Avro File?
-A serialized file (binary or JSON) (also can be compressed) file with a
-schema and data in it. Read more about
-[Avro](https://Avro.apache.org/docs/current/spec.html).
+A file with data records (JSON) and a schema (JSON) to describe each data
+record. Avro files can be serialized into a binary format and compressed.
 
-## Avro Basics
+Read more about [Avro](https://Avro.apache.org/docs/current/spec.html).
 
-### Avro File
-The writer takes in a schema (JSON file) and the data which conforms to that
-schema, and writes it to an Avro file. The schema gets written first,
-then the data records.
+## What is a PFB File?
 
-### Write Avro
-The Avro schema is pretty simple. Its a JSON file. It has entities,
-their attributes, and the types of those attributes.
-You can represent primitive types and complex types in order to represent
-the schema for complicated nested JSON structures.
+A PFB file is special kind of Avro file, suitable for capturing and
+reconstructing biomedical relational data.
 
-### Read Avro
-The reader doesn't need the schema since its embedded in the data.
-The reader reads in and parses the Avro file to JSON.
+A PFB file is an Avro file with a particular schema that represents a graph
+structure (adjacency list). We call this schema the
+[PFB Schema](https://github.com/uc-cdis/pypfb/tree/master/doc)
+
+The graph structure consists of a list of JSON objects called PFB Entity
+objects. Each PFB Entity conforms to the PFB Schema. A PFB Entity has
+attributes + values, relations to other PFB Entities, and ontology references.
+The ontology references can be attached to the PFB Entity and also to each
+attribute of the PFB Entity.
+
+The data records in a PFB file are produced by transforming the original data
+from a relational database into PFB Entity objects.
+
+![How PFB Exporter Works](docs/source/_static/images/pfb-exporter.png)
 
 ## Vanilla Avro vs PFB
 Let's say a client receives an Avro file. It reads in the Avro data.
 Now a client has the Avro schema and all of the data that conforms to that
 schema in a big JSON blob. It can do what it wants. Maybe it wants to construct
-some data input forms. To do this it has everything it needs since the schema
+some data input forms. It has everything it needs to do this since the schema
 has all of the entities, attributes, and types for those attributes defined.
 
 Now what happens if the client wants to reconstruct a relational database
 from the data? How does it know what tables to create, and what the
 relationships are between those tables? Which relationships are
-required vs not?
-
-This is where PFB comes in. PFB is also an Avro file except that the data
-inside a PFB Avro file has been transformed into a graph
-(adjacency list) making it suitable to capture and reconstruct data
-from relational databases.
+required vs not? This is one of the problems PFB addresses.
