@@ -92,7 +92,7 @@ class PfbBuilder(object):
 
             # Transform relational data to PFB Entity JSON objects
             pfb_entities = PfbEntityBuilder(
-                schema_builder.relational_model, self.output_dir
+                schema_builder.relational_model, self.data_dir, self.output_dir
             ).create()
 
             # Create the PFB file from the PFB Schema and data
@@ -112,9 +112,8 @@ class PfbBuilder(object):
         """
         Create a PFB file from a PFB Schema and PFB Entity JSON objects
         """
-        pass
-        # parsed_schema = parse_schema(pfb_schema)
-        #
+        parsed_schema = parse_schema(pfb_schema)
+
         # with open(self.pfb_file, 'a+b') as avro_file:
         #     for ent in pfb_entities:
         #         writer(avro_file, parsed_schema, ent)

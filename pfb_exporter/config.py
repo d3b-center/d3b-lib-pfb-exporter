@@ -14,4 +14,7 @@ REL_MODEL_FILE = 'relational_model.json'
 PFB_SCHEMA_TEMPLATE = os.path.join(
     ROOT_DIR, 'template', DEFAULT_PFB_SCHEMA_FILE
 )
+METADATA_TEMPLATE = os.path.join(
+    ROOT_DIR, 'template', 'metadata.json'
+)
 DEFAULT_MODELS_PATH = os.path.join(DEFAULT_OUTPUT_DIR, 'models.py')

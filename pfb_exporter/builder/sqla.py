@@ -141,5 +141,5 @@ class SqlaModelBuilder(object):
 
         self.logger.info(
             f'Imported {len(self.imported_models)} SQLAlchemy models:'
-            f'\n{pformat([type(m).__name__] for m in self.imported_models)}'
+            f'\n{pformat([m.__name__ for m in self.imported_models])}'
         )

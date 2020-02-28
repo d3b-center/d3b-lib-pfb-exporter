@@ -38,3 +38,17 @@ def test_create_schema():
     )
 
     assert result.exit_code == 0
+
+
+def test_create_entities():
+    """
+    Test pfb_exporter.cli.create_entities
+    """
+    pass
+
+
+def validate_pfb_build():
+    """
+    Raw data -> Write PFB File -> Read PFB file -> Raw data
+    """
+    pass

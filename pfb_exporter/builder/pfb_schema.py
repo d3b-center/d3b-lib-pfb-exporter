@@ -228,7 +228,10 @@ class PfbSchemaBuilder(object):
         if column_obj.foreign_keys:
             fkname = column_obj.foreign_keys.pop().target_fullname
             column_dict.update({
-                'foreign_key': {fkname: fkname.split('.')[0]}
+                'foreign_key': {
+                    'attribute': fkname,
+                    'table': fkname.split('.')[0]
+                }
             })
 
         return column_dict
