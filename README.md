@@ -3,7 +3,8 @@
 Transform and export data from a relational database into a
 PFB (Portable Format for Bioinformatics) file.
 
-A PFB file is special kind of Avro file, suitable for capturing and reconstructing relational data. Read Background for more information.
+A PFB file is special kind of Avro file, suitable for capturing and
+reconstructing relational data. Read Background for more information.
 
 ## Quickstart
 

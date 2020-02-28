@@ -9,7 +9,7 @@ from pfb_exporter.config import (
     DEFAULT_OUTPUT_DIR,
     DEFAULT_MODELS_PATH
 )
-from pfb_exporter.builder import PfbBuilder
+from pfb_exporter.pfb_builder import PfbBuilder
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
@@ -61,7 +61,11 @@ def export(
     data_dir, database_url, models_filepath, output_dir
 ):
     """
-    Export relational data to PFB (Portable Bioinformatics Format) file
+    Transform and export data from a relational database into a
+    PFB (Portable Format for Bioinformatics) file.
+
+    A PFB file is special kind of Avro file, suitable for capturing and
+    reconstructing relational data. Read Background for more information.
 
     \b
     Arguments:
@@ -80,8 +84,8 @@ def create_schema(
     data_dir, database_url, models_filepath, output_dir
 ):
     """
-    Transform the relational model into a PFB Schema, which is required to
-    create the PFB file
+    Generate a PFB Schema from the database. The PFB Schema is required to
+    create the PFB file.
 
     \b
     Arguments:

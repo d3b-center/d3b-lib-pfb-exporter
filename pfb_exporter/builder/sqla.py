@@ -1,5 +1,7 @@
 """
-Transform SQLAlchemy Models to PFB Schema
+Import SQLAlchemy model classes from file
+
+Optional - Inspect DB and generate the SQLAlchemy model file
 """
 import os
 import logging
@@ -14,20 +16,16 @@ from sqlalchemy.exc import NoInspectionAvailable
 
 
 from pfb_exporter.utils import import_module_from_file, seconds_to_hms
-from pfb_exporter.transform.schema_builder import PfbSchemaBuilder
 
 
-class SqlaTransformer(object):
+class SqlaModelBuilder(object):
 
     def __init__(
-            self, data_dir, models_filepath, output_dir, db_conn_url=None
+            self, models_filepath, output_dir, db_conn_url=None
     ):
         """
         Constructor
 
-        :param data_dir: path to the JSON data which conforms to the SQLAlchemy
-        model
-        :type data_dir: str
         :param models_filepath: path to where the SQLAlchemy models are stored
         or will be written if they are generated
         :type models_filepath: str
@@ -37,26 +35,17 @@ class SqlaTransformer(object):
         database. See SQLAlchemy documentation for supported databases
         """
         self.logger = logging.getLogger(type(self).__name__)
-        self.data_dir = data_dir
         self.models_filepath = models_filepath
         self.output_dir = output_dir
         self.db_conn_url = db_conn_url
-        self.data_dict = {}
         self.imported_models = []
 
-    def create_schema(self):
+    def create_and_import_models(self):
         """
-        Transform SQLAlchemy models into a PFB Schema.
+        Import SQLAlchemy model classes from file
 
-        See PfbSchemaBuilder.create for details
-
-        1. (Optional) Generate SQLAlchemy models from database
-        2. Import model classes from dir or file
-        2. Transform SQLAlchemy models to PFB Schema
+        - (Optional) Inspect DB and generate the SQLAlchemy model file
         """
-        self.logger.info(
-            'BEGIN transformation from relational model to PFB Schema '
-        )
 
         if self.db_conn_url:
             self._generate_models()
@@ -70,27 +59,6 @@ class SqlaTransformer(object):
                 'connect to a database to generate the models or '
                 'provide a dir or file path to where the models reside'
             )
-
-        pfb_schema = PfbSchemaBuilder(
-            self.imported_models, self.output_dir
-        ).create()
-
-        self.logger.info(
-            'END transformation from relational model to PFB Schema'
-        )
-
-        return pfb_schema
-
-    def create_entities(self):
-        """
-        Transform relational data into PFB Entities. Each PFB Entity conforms
-        to the PFB Schema
-
-        See PfbEntityBuilder.create for details
-        """
-        # Create the Metadata Entity from the PFB Schema
-        # Create the non-Metadata Entities from the data
-        return {}
 
     def _generate_models(self):
         """

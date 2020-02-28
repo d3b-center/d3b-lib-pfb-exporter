@@ -6,7 +6,13 @@ import logging
 
 
 class PfbEntityBuilder(object):
-    def __init__(self, model_dict, output_dir):
+    def __init__(self, relational_model, output_dir):
         self.logger = logging.getLogger(type(self).__name__)
-        self.model_dict = model_dict
+        self.relational_model = relational_model
         self.output_dir = output_dir
+
+    def create(self):
+        """
+        Create PFB Entity JSON objects
+        """
+        pass
