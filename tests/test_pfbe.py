@@ -66,8 +66,6 @@ def test_validate_pfb_build():
 
     # Compare with original
     for i, file_record in enumerate(records_from_file):
-        # if file_record['name'] == 'Metadata':
-        #     continue
         print(f'Testing {file_record["name"]}')
         source_record = source_records[file_record['name']][file_record['id']]
         source_obj = source_record['object'][1]
