@@ -7,9 +7,10 @@ import click
 
 from pfb_exporter.config import (
     DEFAULT_OUTPUT_DIR,
-    DEFAULT_MODELS_PATH
+    SQLA_MODELS_FILE,
+    DEFAULT_AVRO_SCHEMA_NAMESPACE
 )
-from pfb_exporter.pfb_builder import PfbBuilder
+from pfb_exporter.builder import PfbFileBuilder
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
@@ -26,6 +27,13 @@ def common_args_options(func):
     """
     Common click args and options
     """
+    # The string to use as the Avro schema namespace
+    func = click.option(
+        '--namespace', '-n',
+        help='The namespace (e.g. kidsfirst) to use in the Avro schema',
+        show_default=True,
+        default=DEFAULT_AVRO_SCHEMA_NAMESPACE)(func)
+
     # Output directory where PFB file, models, and logs get written
     func = click.option(
         '--output_dir', '-o',
@@ -36,17 +44,24 @@ def common_args_options(func):
 
     # Path to dir or file where models reside
     func = click.option(
-        '--models_filepath', '-m',
-        show_default=True,
-        default=DEFAULT_MODELS_PATH,
+        '--models_path', '-m',
+        help=(
+            'Path to a file or directory where SQLAlchemy models will be '
+            'written to (if generated from database) or read from.'
+            'If a path is not provided, the default: '
+            f'<output directory>/{SQLA_MODELS_FILE} will be used'
+        ),
         type=click.Path(exists=False, file_okay=True, dir_okay=True))(func)
 
     # Db connection url
     func = click.option(
         '--database_url', '-d',
         default=None,
-        help='The connection URL to the database from which SQLAlchemy models '
-        'will be generated')(func)
+        help=(
+            'The connection URL to the database from which SQLAlchemy models '
+            'will be generated. See help for --models_path for details '
+            'on where models will be written to'
+        ))(func)
 
     func = click.argument(
         'data_dir',
@@ -58,7 +73,7 @@ def common_args_options(func):
 @click.command()
 @common_args_options
 def export(
-    data_dir, database_url, models_filepath, output_dir
+    data_dir, database_url, models_path, output_dir, namespace
 ):
     """
     Transform and export data from a relational database into a
@@ -73,15 +88,15 @@ def export(
         data_dir - Path to directory containing the JSON payloads which
         conform to the SQLAlchemy models.
     """
-    PfbBuilder(
-        data_dir, database_url, models_filepath, output_dir,
-    ).export()
+    PfbFileBuilder(
+        data_dir, database_url, models_path, output_dir, namespace
+    ).build()
 
 
 @click.command('create_schema')
 @common_args_options
 def create_schema(
-    data_dir, database_url, models_filepath, output_dir
+    data_dir, database_url, models_path, output_dir, namespace
 ):
     """
     Generate a PFB Schema from the database. The PFB Schema is required to
@@ -94,9 +109,9 @@ def create_schema(
         conform to the sqlalchemy models.
     """
 
-    PfbBuilder(
-        '', database_url, models_filepath, output_dir
-    ).export(output_to_pfb=False)
+    PfbFileBuilder(
+        '', database_url, models_path, output_dir, namespace
+    ).build(write_pfb=False)
 
 
 cli.add_command(export)

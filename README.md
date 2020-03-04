@@ -19,11 +19,12 @@ $ pfbe -h
 
 Try it out:
 
-**🚧 Does not generate a PFB yet 🚧**
-
 ```shell
-$ pfbe export tests/data/input -m tests/data/input -o tests/data/pfb_export
+$ pfbe export tests/data/input -m tests/data/models.py -o tests/data/pfb_export
 ```
+## Supported Databases
+Theoretically, any of the databases supported by SQLAlchemy but this
+has only been tested on a PostgreSQL database
 
 ## Developers
 
@@ -46,20 +47,18 @@ Read more about [Avro](https://Avro.apache.org/docs/current/spec.html).
 A PFB file is special kind of Avro file, suitable for capturing and
 reconstructing biomedical relational data.
 
-A PFB file is an Avro file with a particular schema that represents a graph
-structure (adjacency list). We call this schema the
+A PFB file is an Avro file with a particular Avro schema that represents a
+relational database. We call this schema the
 [PFB Schema](https://github.com/uc-cdis/pypfb/tree/master/doc)
 
-The graph structure consists of a list of JSON objects called PFB Entity
-objects. Each PFB Entity conforms to the PFB Schema. A PFB Entity has
-attributes + values, relations to other PFB Entities, and ontology references.
-The ontology references can be attached to the PFB Entity and also to each
-attribute of the PFB Entity.
+The data in a PFB file contains a list of JSON objects called PFB Entity
+objects. There are 2 types of PFB Entities. One (Metadata) captures
+information about the relational database and the other (Table Row) captures
+a row of data from a particular table in the database.
 
 The data records in a PFB file are produced by transforming the original data
-from a relational database into PFB Entity objects.
-
-![How PFB Exporter Works](docs/source/_static/images/pfb-exporter.png)
+from a relational database into PFB Entity objects. Each PFB Entity object
+conforms to its Avro schema.
 
 ## Vanilla Avro vs PFB
 Let's say a client receives an Avro file. It reads in the Avro data.
@@ -72,3 +71,21 @@ Now what happens if the client wants to reconstruct a relational database
 from the data? How does it know what tables to create, and what the
 relationships are between those tables? Which relationships are
 required vs not? This is one of the problems PFB addresses.
+
+## How PFB Exporter CLI Works
+
+![How PFB Exporter Works](docs/source/_static/images/pfb-exporter.png)  
+
+### PFB File Creation
+
+1. Create the Avro schemas PFB Entities and the PFB File
+2. Transform the JSON objects representing rows of data from the relational
+   database into PFB Entities
+3. Add the Avro schemas to the PFB Avro file
+4. Add the PFB Entities to the Avro file
+
+### PFB Schema Creation
+The PFB File schema is created from SQLAlchemy declarative base classes
+in a file or directory. If the classes are not provided, they are generated
+by inspecting the database's schema using the sqlacodegen
+(https://github.com/agronholm/sqlacodegen) library.

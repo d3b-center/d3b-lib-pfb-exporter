@@ -2,14 +2,13 @@ import datetime
 import logging
 import logging.handlers
 import importlib
-import inspect
 import time
 import os
 
 from pfb_exporter.config import (
     DEFAULT_LOG_FILENAME,
     DEFAULT_LOG_LEVEL,
-    DEFAULT_LOG_OVERWRITE_OPT,
+    DEFAULT_LOG_OVERWRITE_OPT
 )
 
 

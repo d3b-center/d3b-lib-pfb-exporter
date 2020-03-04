@@ -1,18 +1,87 @@
 {
     "fields": [
         {
-            "name": "external_id",
-            "type": "string"
-        },
-        {
-            "name": "gender",
+            "name": "object",
             "type": [
-                "null",
-                "string"
+                {
+                    "fields": [
+                        {
+                            "default": null,
+                            "name": "external_id",
+                            "type": [
+                                "null",
+                                "string"
+                            ]
+                        },
+                        {
+                            "default": null,
+                            "name": "gender",
+                            "type": [
+                                "null",
+                                "string"
+                            ]
+                        },
+                        {
+                            "default": null,
+                            "name": "race",
+                            "type": [
+                                "null",
+                                "string"
+                            ]
+                        },
+                        {
+                            "default": null,
+                            "name": "age",
+                            "type": [
+                                "null",
+                                "int"
+                            ]
+                        }
+                    ],
+                    "name": "patient",
+                    "type": "record"
+                },
+                {
+                    "fields": [
+                        {
+                            "default": null,
+                            "name": "external_id",
+                            "type": [
+                                "null",
+                                "string"
+                            ]
+                        },
+                        {
+                            "default": null,
+                            "name": "analyte_type",
+                            "type": [
+                                "null",
+                                "string"
+                            ]
+                        },
+                        {
+                            "default": null,
+                            "name": "composition",
+                            "type": [
+                                "null",
+                                "string"
+                            ]
+                        },
+                        {
+                            "name": "duo_ids",
+                            "type": {
+                                "items": "string",
+                                "type": "array"
+                            }
+                        }
+                    ],
+                    "name": "specimen",
+                    "type": "record"
+                }
             ]
         }
     ],
-    "name": "Participant",
-    "namespace": "kf-vanilla.avro",
+    "name": "FileSchema",
+    "namespace": "kidsfirst",
     "type": "record"
 }
