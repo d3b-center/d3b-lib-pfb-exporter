@@ -1,10 +1,21 @@
+<p align="center">
+  <img alt="Logo for The Center for Data Driven Discovery" src="https://raw.githubusercontent.com/d3b-center/handbook/master/website/static/img/chop_logo.svg?sanitize=true" width="400px" />
+</p>
+<p align="center">
+  <a href="https://circleci.com/gh/d3b-center/d3b-lib-pfb-exporter"><img src="https://img.shields.io/circleci/project/github/d3b-center/d3b-lib-pfb-exporter.svg?style=for-the-badge"><a>
+  <a href="https://github.com/d3b-center/d3b-lib-pfb-exporter/blob/master/LICENSE"><img src="https://img.shields.io/github/license/d3b-center/d3b-lib-pfb-exporter.svg?style=for-the-badge"></a>
+</p>
+
 # 🏭 PFB Exporter
 
 Transform and export data from a relational database into a
 PFB (Portable Format for Bioinformatics) file.
 
 A PFB file is special kind of Avro file, suitable for capturing and
-reconstructing relational data. Read Background for more information.
+reconstructing relational data. Read [Background](#Background) for more information.
+
+**NOTE: This is still a 🚧 prototype as its only been tested on the Kids First
+PostgreSQL database**
 
 ## Quickstart
 
@@ -20,11 +31,39 @@ $ pfbe -h
 Try it out:
 
 ```shell
+# List commands and docs
+$ pfbe --help
+
+# Create a PFB file from the given data and SQLAlchemy models
 $ pfbe export tests/data/input -m tests/data/models.py -o tests/data/pfb_export
+
+# Create a PFB file from the given data and generate SQLAlchemy models from db
+$ pfbe export tests/data/input -d $MY_DB_CONN_URL -m tests/data/models.py -o tests/data/pfb_export
+
+# Create just the PFB schema from the given SQLAlchemy models
+$ pfbe create_schema -m tests/data/models.py -o tests/data/pfb_export
+
+# Create just the PFB schema but first generate the SQLAlchemy models from db
+$ pfbe create_schema -d $MY_DB_CONN_URL -m tests/data/models.py -o tests/data/pfb_export
 ```
+## Outputs
+
+The output contains the generated PFB file, logs, and other files for debugging
+
+```
+tests/data/pfb_export
+├── logs
+│   └── pfb_export.log  -> Log file containing log statements from console
+├── metadata.json       -> PFB Metadata Entity
+├── models.py           -> Generated SQLAlchemy model classes if run with -d CLI option
+├── orm_models.json     -> Serialized SQLAlchemy model classes
+├── pfb.avro            -> The PFB file
+└── pfb_schema.json     -> The PFB file schema
+```
+
 ## Supported Databases
 Theoretically, any of the databases supported by SQLAlchemy but this
-has only been tested on a PostgreSQL database
+has only been tested on a single PostgreSQL database.
 
 ## Developers
 
@@ -78,7 +117,7 @@ required vs not? This is one of the problems PFB addresses.
 
 ### PFB File Creation
 
-1. Create the Avro schemas PFB Entities and the PFB File
+1. Create the Avro schemas for PFB Entity types and the PFB File
 2. Transform the JSON objects representing rows of data from the relational
    database into PFB Entities
 3. Add the Avro schemas to the PFB Avro file
@@ -87,5 +126,5 @@ required vs not? This is one of the problems PFB addresses.
 ### PFB Schema Creation
 The PFB File schema is created from SQLAlchemy declarative base classes
 in a file or directory. If the classes are not provided, they are generated
-by inspecting the database's schema using the sqlacodegen
-(https://github.com/agronholm/sqlacodegen) library.
+by inspecting the database's schema using the
+[sqlacodegen](https://github.com/agronholm/sqlacodegen) library.
