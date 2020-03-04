@@ -63,15 +63,14 @@ def common_args_options(func):
             'on where models will be written to'
         ))(func)
 
-    func = click.argument(
-        'data_dir',
-        type=click.Path(exists=True, file_okay=True, dir_okay=True))(func)
-
     return func
 
 
 @click.command()
 @common_args_options
+@click.argument(
+    'data_dir',
+    type=click.Path(exists=True, file_okay=True, dir_okay=True))
 def export(
     data_dir, database_url, models_path, output_dir, namespace
 ):
@@ -85,8 +84,19 @@ def export(
     \b
     Arguments:
         \b
-        data_dir - Path to directory containing the JSON payloads which
-        conform to the SQLAlchemy models.
+        data_dir - Path to directory containing the JSON ND files. Each file
+        represents row data from the database.
+
+        The file MUST follow this format:
+
+            "biospecimen"
+            { biospecimen JSON object 0 }
+                        ...
+            { biospecimen JSON object N }
+
+        The first JSON object in the file must be the name of the table that
+        subsequent JSON objects conform to. Any JSON object after the first one
+        in the file captures the row data conforming to that table's schema.
     """
     PfbFileBuilder(
         data_dir, database_url, models_path, output_dir, namespace
@@ -96,17 +106,11 @@ def export(
 @click.command('create_schema')
 @common_args_options
 def create_schema(
-    data_dir, database_url, models_path, output_dir, namespace
+    database_url, models_path, output_dir, namespace
 ):
     """
     Generate a PFB Schema from the database. The PFB Schema is required to
     create the PFB file.
-
-    \b
-    Arguments:
-        \b
-        data_dir - Path to directory containing the JSON payloads which
-        conform to the sqlalchemy models.
     """
 
     PfbFileBuilder(
