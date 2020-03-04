@@ -1,91 +1,147 @@
 """
-Export biomedical data from a relational database to an Avro file.
+Transform and export data from a relational database into a
+PFB (Portable Format for Bioinformatics) file.
 
-An Avro file stores the data schema as a JSON blob and the data in a
-binary format
+A PFB file is an Avro file with a particular Avro schema that represents a
+relational database. We call this schema the PFB File Schema
 
-See https://avro.apache.org for details
+See pfb_exporter.schema for more information on the PFB File Schema
 
-In this case, the Avro file is called a PFB
-(Portable Format for Bioinformatics) file because the data in the Avro file
-conforms to the PFB schema, which is a graph structure suitable for capturing
-relational data.
+The data in a PFB file contains a list of JSON objects called PFB Entity
+objects. There are 2 types of PFB Entities. One (Metadata) captures
+information about the relational database and the other (Table Row) captures
+a row of data from a particular table in the database.
 
-PFB file creations involves the following steps:
+The data records in a PFB file are produced by transforming the original data
+from a relational database into PFB Entity objects. Each PFB Entity object
+conforms to its Avro schema.
 
-1. Create a PFB schema to represent the relational database
-2. Transform the data from the relational database into the graph form
-3. Add the PFB schema to the Avro file as an Avro schema
-4. Add the transformed graph data to the Avro file as data records
+PFB File Creation
+-----------------
 
-Supported Databases:
-- Any of the databases supported by SQLAlchemy since the SQLAlchemy ORM
-is used to inspect the database and autogenerate the SQLAlchemy models
-which are in turn used to create the PFB Schema.
+1. Create the Avro schemas PFB Entities and the PFB File
+2. Transform the JSON objects representing rows of data from the relational
+   database into PFB Entities
+3. Add the Avro schemas to the PFB Avro file
+4. Add the PFB Entities to the Avro file
+
+PFB Schema Creation
+-------------------
+The PFB File schema is created from SQLAlchemy declarative base classes
+in a file or directory. If the classes are not provided, they are generated
+by inspecting the DB schema using the sqlacodegen library.
+
+See https://github.com/agronholm/sqlacodegen
+
+Supported Databases
+-------------------
+Theoretically, any of the databases supported by SQLAlchemy but this
+has only been tested on a PostgreSQL database
 """
+
 import os
 import logging
+from pprint import pformat, pprint
+
+from fastavro import parse_schema
 
 from pfb_exporter.config import (
     DEFAULT_OUTPUT_DIR,
     DEFAULT_PFB_FILE,
-    DEFAULT_MODELS_PATH
+    SQLA_MODELS_FILE,
+    DEFAULT_AVRO_SCHEMA_NAMESPACE
 )
 from pfb_exporter.utils import setup_logger
-from pfb_exporter.transform.sqla import SqlaTransformer
+from pfb_exporter.schema import PfbFileSchema
+from pfb_exporter.sqla import SqlaModelBuilder
 
 
-class PfbBuilder(object):
+class PfbFileBuilder(object):
 
     def __init__(
         self,
         data_dir,
         db_conn_url=None,
-        models_filepath=DEFAULT_MODELS_PATH,
-        output_dir=DEFAULT_OUTPUT_DIR
+        models_path=None,
+        output_dir=DEFAULT_OUTPUT_DIR,
+        namespace=DEFAULT_AVRO_SCHEMA_NAMESPACE
     ):
-        setup_logger(os.path.join(output_dir, 'logs'))
-        self.logger = logging.getLogger(type(self).__name__)
-        self.models_filepath = os.path.abspath(
-            os.path.expanduser(models_filepath)
-        )
-        self.data_dir = os.path.abspath(os.path.expanduser(data_dir))
-        self.output_dir = os.path.abspath(os.path.expanduser(output_dir))
-
-        self.pfb_file = os.path.join(output_dir, DEFAULT_PFB_FILE)
-
-        # Relational model to PFB Schema transformer
-        self.transformer = SqlaTransformer(
-            self.data_dir,
-            self.models_filepath,
-            self.output_dir,
-            db_conn_url=db_conn_url
-        )
-
-    def export(self, output_to_pfb=True):
         """
-        Entry point to create a PFB file containing data from a relational
+        Build a PFB Avro file containing data from a biomedical relational
         database
 
-        - (Optional) Inspect DB and generate the SQLAlchemy models
-        - Transform the models into a PFB Schema
-        - Transform the data into PFB Entities
-        - Create an Avro file with the PFB schema and Entities
+        :param data_dir: A directory of JSON ND files. Each file is expected
+        to contain JSON objects each of which contains row data from a
+        database table. See yield_entities for details
+        :type data_dir: str
+        :param db_conn_url: The database connection URL.
+        Example: postgresql://postgres:mypassword@127.0.0.1:5432/mydb
+        :type db_conn_url: str
+        :param models_path: path to where the SQLAlchemy models are or
+        will be written if generated
+        :type models_path: str
+        :param output_dir: directory where all intermediate outputs and the
+        PFB Avro file will be written.
+        :type output_dir: str
+        :param namespace: the Avro schema namespace
+        :type namespace: str
+        """
 
-        :param output_to_pfb: whether to complete the export after transforming
-        the relational model to the PFB schema
-        :type output_to_pfb: bool
+        setup_logger(os.path.join(output_dir, 'logs'))
+        self.logger = logging.getLogger(type(self).__name__)
+        self.data_dir = os.path.abspath(os.path.expanduser(data_dir))
+        self.db_conn_url = db_conn_url
+        self.models_path = models_path or os.path.join(
+            self.output_dir, SQLA_MODELS_FILE
+        )
+        self.output_dir = os.path.abspath(os.path.expanduser(output_dir))
+        self.namespace = namespace
+
+        self.pfb_file = os.path.join(self.output_dir, DEFAULT_PFB_FILE)
+
+    def build(self, write_pfb=True):
+        """
+        Build PFB entities and write to an Avro file
+
+        Import (or generate and import) the ORM classes
+        Create the PFB File Avro schema
+        Create and yield the PFB Entities
+        Write each PFB Entity as its yielded to the output Avro file,
+        pfb_file
         """
         try:
-            # Transform relational model to PFB Schema
-            pfb_schema = self.transformer.create_schema()
+            # Import the SQLAlchemy model classes from file
+            self.model_builder = SqlaModelBuilder(
+                self.models_path,
+                self.output_dir,
+                db_conn_url=self.db_conn_url
+            )
+            self.model_builder.create_and_import_models()
 
-            # Transform relational data to PFB Entity JSON objects
-            pfb_entities = self.transformer.create_entities()
+            if not (self.db_conn_url or
+                    self.model_builder.imported_model_classes):
+                raise RuntimeError(
+                    'There are 0 models to generate the PFB file. You must '
+                    'provide a DB connection URL that can be used to '
+                    'connect to a database to generate the models or '
+                    'provide a dir or file path to where the models reside'
+                )
 
-            # Create the PFB file from the PFB Schema and data
-            if output_to_pfb:
-                self._build_pfb(pfb_schema, pfb_entities)
+            # Build the PFB file Avro schema
+            self.pfb_file_schema = PfbFileSchema(
+                self.model_builder.orm_models_dict, self.output_dir,
+                self.namespace
+            )
+
+            # Build the PFB file entities and write to the Avro file
+            if write_pfb:
+                self.logger.info(
+                    f'✏️ Begin writing PFB Avro file to {self.pfb_file}'
+                )
+                if os.path.isfile(self.pfb_file):
+                    os.remove(self.pfb_file)
+
+                parsed_schema = parse_schema(self.pfb_file_schema.avro_schema)
 
         except Exception as e:
             self.logger.exception(str(e))
@@ -95,12 +151,4 @@ class PfbBuilder(object):
             self.logger.info(
                 f'✅ Export to PFB file {self.pfb_file} succeeded!'
             )
-
-    def _build_pfb(self, pfb_schema, pfb_entities):
-        """
-        Create a PFB file from a PFB Schema and PFB Entity JSON objects
-        """
-        # TODO
-        # Add schema to temporary avro file
-        # Add data records
-        pass
+            pass
