@@ -1,0 +1,44 @@
+{
+    "fields": [
+        {
+            "default": null,
+            "name": "id",
+            "type": [
+                "null",
+                "string"
+            ]
+        },
+        {
+            "name": "name",
+            "type": "string"
+        },
+        {
+            "name": "object",
+            "type": []
+        },
+        {
+            "default": [],
+            "name": "relations",
+            "type": {
+                "items": {
+                    "fields": [
+                        {
+                            "name": "dst_id",
+                            "type": "string"
+                        },
+                        {
+                            "name": "dst_name",
+                            "type": "string"
+                        }
+                    ],
+                    "name": "Relation",
+                    "type": "record"
+                },
+                "type": "array"
+            }
+        }
+    ],
+    "type":"record",
+    "name": "Entity",
+    "namespace": null
+}

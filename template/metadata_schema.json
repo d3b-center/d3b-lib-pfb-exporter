@@ -1,0 +1,100 @@
+{
+    "fields": [
+        {
+            "name": "nodes",
+            "type": {
+                "items": {
+                    "fields": [
+                        {
+                            "name": "name",
+                            "type": "string"
+                        },
+                        {
+                            "name": "ontology_reference",
+                            "type": "string"
+                        },
+                        {
+                            "name": "values",
+                            "type": {
+                                "type": "map",
+                                "values": "string"
+                            }
+                        },
+                        {
+                            "name": "links",
+                            "type": {
+                                "items": {
+                                    "fields": [
+                                        {
+                                            "name": "multiplicity",
+                                            "type": {
+                                                "name": "Multiplicity",
+                                                "symbols": [
+                                                    "ONE_TO_ONE",
+                                                    "ONE_TO_MANY",
+                                                    "MANY_TO_ONE",
+                                                    "MANY_TO_MANY"
+                                                ],
+                                                "type": "enum"
+                                            }
+                                        },
+                                        {
+                                            "name": "dst",
+                                            "type": "string"
+                                        },
+                                        {
+                                            "name": "name",
+                                            "type": "string"
+                                        }
+                                    ],
+                                    "name": "Link",
+                                    "type": "record"
+                                },
+                                "type": "array"
+                            }
+                        },
+                        {
+                            "name": "properties",
+                            "type": {
+                                "items": {
+                                    "fields": [
+                                        {
+                                            "name": "name",
+                                            "type": "string"
+                                        },
+                                        {
+                                            "name": "ontology_reference",
+                                            "type": "string"
+                                        },
+                                        {
+                                            "name": "values",
+                                            "type": {
+                                                "type": "map",
+                                                "values": "string"
+                                            }
+                                        }
+                                    ],
+                                    "name": "Property",
+                                    "type": "record"
+                                },
+                                "type": "array"
+                            }
+                        }
+                    ],
+                    "name": "Node",
+                    "type": "record"
+                },
+                "type": "array"
+            }
+        },
+        {
+            "name": "misc",
+            "type": {
+                "type": "map",
+                "values": "string"
+            }
+        }
+    ],
+    "name": "Metadata",
+    "type": "record"
+}

@@ -266,7 +266,7 @@ class TaskGenomicFile(Base):
     task = relationship('Task')
 
 
-class Biospeciman(Base):
+class Biospecimen(Base):
     __tablename__ = 'biospecimen'
 
     uuid = Column(UUID, unique=True)
@@ -301,7 +301,7 @@ class Biospeciman(Base):
     sequencing_center = relationship('SequencingCenter')
 
 
-class Diagnosi(Base):
+class Diagnosis(Base):
     __tablename__ = 'diagnosis'
 
     uuid = Column(UUID, unique=True)
@@ -327,7 +327,8 @@ class Diagnosi(Base):
 class FamilyRelationship(Base):
     __tablename__ = 'family_relationship'
     __table_args__ = (
-        UniqueConstraint('participant1_id', 'participant2_id', 'participant1_to_participant2_relation', 'participant2_to_participant1_relation'),
+        UniqueConstraint('participant1_id', 'participant2_id',
+                         'participant1_to_participant2_relation', 'participant2_to_participant1_relation'),
     )
 
     uuid = Column(UUID, unique=True)
@@ -342,8 +343,10 @@ class FamilyRelationship(Base):
     visible = Column(Boolean, nullable=False, server_default=text("true"))
     source_text_notes = Column(Text)
 
-    participant1 = relationship('Participant', primaryjoin='FamilyRelationship.participant1_id == Participant.kf_id')
-    participant2 = relationship('Participant', primaryjoin='FamilyRelationship.participant2_id == Participant.kf_id')
+    participant1 = relationship(
+        'Participant', primaryjoin='FamilyRelationship.participant1_id == Participant.kf_id')
+    participant2 = relationship(
+        'Participant', primaryjoin='FamilyRelationship.participant2_id == Participant.kf_id')
 
 
 class Outcome(Base):
@@ -382,7 +385,7 @@ class Phenotype(Base):
     participant = relationship('Participant')
 
 
-class BiospecimenDiagnosi(Base):
+class BiospecimenDiagnosis(Base):
     __tablename__ = 'biospecimen_diagnosis'
     __table_args__ = (
         UniqueConstraint('diagnosis_id', 'biospecimen_id'),
@@ -397,8 +400,8 @@ class BiospecimenDiagnosi(Base):
     visible = Column(Boolean, nullable=False, server_default=text("true"))
     external_id = Column(Text)
 
-    biospecimen = relationship('Biospeciman')
-    diagnosis = relationship('Diagnosi')
+    biospecimen = relationship('Biospecimen')
+    diagnosis = relationship('Diagnosis')
 
 
 class BiospecimenGenomicFile(Base):
@@ -416,5 +419,5 @@ class BiospecimenGenomicFile(Base):
     visible = Column(Boolean, nullable=False, server_default=text("true"))
     external_id = Column(Text)
 
-    biospecimen = relationship('Biospeciman')
+    biospecimen = relationship('Biospecimen')
     genomic_file = relationship('GenomicFile')
