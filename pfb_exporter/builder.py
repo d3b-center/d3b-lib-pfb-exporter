@@ -19,7 +19,7 @@ conforms to its Avro schema.
 PFB File Creation
 -----------------
 
-1. Create the Avro schemas PFB Entities and the PFB File
+1. Create the Avro schemas for PFB Entity types and the PFB File
 2. Transform the JSON objects representing rows of data from the relational
    database into PFB Entities
 3. Add the Avro schemas to the PFB Avro file
