@@ -18,6 +18,12 @@ DEFAULT_METADATA_FILE = 'metadata.json'
 PFB_SCHEMA_TEMPLATE = os.path.join(
     ROOT_DIR, 'template', DEFAULT_PFB_SCHEMA_FILE
 )
+METADATA_TEMPLATE = os.path.join(
+    ROOT_DIR, 'template', 'metadata.json'
+)
 METADATA_SCHEMA_TEMPLATE = os.path.join(
     ROOT_DIR, 'template', 'metadata_schema.json'
+)
+ENTITY_TEMPLATE = os.path.join(
+    ROOT_DIR, 'template', 'entity.json'
 )

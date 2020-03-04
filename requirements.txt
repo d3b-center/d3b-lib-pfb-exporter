@@ -5,3 +5,5 @@ sqlacodegen
 psycopg2
 SQLAlchemy
 fastavro
+jsonlines
+deepdiff

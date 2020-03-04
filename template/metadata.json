@@ -1,0 +1,29 @@
+{
+    "metadata": {
+        "id": null,
+        "name": "Metadata",
+        "object": {
+            "misc": {},
+            "nodes": []
+        },
+        "relations": []
+    },
+    "node": {
+        "links": [],
+        "name": "",
+        "ontology_reference": "",
+        "properties": [],
+        "values": {}
+    },
+    "link": {
+        "dst": "",
+        "multiplicity": "",
+        "name": ""
+    },
+    "property":
+    {
+        "name": "",
+        "ontology_reference": "",
+        "values": {}
+    }
+}
