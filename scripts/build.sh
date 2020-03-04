@@ -8,9 +8,3 @@ python3 -m venv venv
 pip install --upgrade pip
 python setup.py install_egg_info
 pip install -e .
-pip install -r doc-requirements.txt
-
-cd docs
-doc8 source
-make html
-cd -
