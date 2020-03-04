@@ -186,52 +186,34 @@ class PfbFileBuilder(object):
 
         The file MUST follow this format:
 
-            "biospecimen,kf_id"
+            "biospecimen"
             { biospecimen JSON object 0 }
                         ...
             { biospecimen JSON object N }
 
-        - The first row must consist of a single JSON string. It must be a
-          comma delimited string with 2 parts (e.g. "biospecimen, kf_id").
-          The first part of the delimited string must specify the table name
-          from which subsequent JSON object records in the file came from.
-          The table name is used as the PFB Entity type.
-
-        - The second part of the delimited string must specifiy the name of the
-          table's primary key. The primary key is used as the PFB Entity id.
+        - The first row must consist of a single JSON string. It must specify
+          the table name from which subsequent JSON object records in the file
+          came from. The table name is used as the PFB Entity type.
 
         - The rest of the records in the file after the first one must be
           valid JSON objects which conform to the table schema.
         """
         def process_first(obj):
             msg = (
-                f'First line of the ndjson file must contain a comma '
-                'delimited string with 2 parts. The first part must '
-                'specify the table name from which all subsequent '
-                'JSON records in the file came from, and the second '
-                'part must specify the name of the tables primary key '
-                '(e.g. "biospecimen, kf_id")'
+                f'First line of the ndjson file must a string '
+                'specifying the table name from which all subsequent '
+                'JSON records in the file came from (e.g. "biospecimen")'
             )
             if not isinstance(obj, str):
                 raise TypeError(msg)
 
-            table_name, primary_key = tuple(
-                [
-                    part.strip()
-                    for part in obj.split(',', 1)
-                ]
-            )
-
-            if not primary_key:
-                raise ValueError(msg)
-
             tables = set(self.model_builder.orm_models_dict.keys())
-            if table_name not in tables:
+            if obj not in tables:
                 raise ValueError(
                     msg + 'Table name must be one of:\n'
                     f'{tables}'
                 )
-            return primary_key, table_name
+            return obj
 
         # Process JSON ND files in data dir
         for fi, fn in enumerate(os.listdir(self.data_dir)):
@@ -241,20 +223,20 @@ class PfbFileBuilder(object):
 
             self.logger.info(f'Processing file #{fi}: {pth}')
 
-            primary_key, table_name = None, None
+            table_name = None
             with jsonlines.open(pth) as ndjson_reader:
                 for i, obj in enumerate(ndjson_reader):
                     # Make sure first record has primary key and table name
                     if i == 0:
-                        primary_key, table_name = process_first(obj)
-                        self.logger.info(
-                            f'Detected table name: {table_name} and '
-                            f'primary key: {primary_key}'
-                        )
+                        table_name = process_first(obj)
+                        self.logger.info(f'Detected table name: {table_name}')
                     else:
                         # Transform the JSON object into a Table Row PFB Entity
                         yield PfbTableRowEntity(
-                            i, obj, primary_key, table_name, self.namespace
+                            i,
+                            obj,
+                            self.model_builder.orm_models_dict[table_name],
+                            self.namespace
                         ).data
 
     def _yield_metadata_entity(self):

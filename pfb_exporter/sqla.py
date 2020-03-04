@@ -223,6 +223,10 @@ class SqlaModelBuilder(object):
                     continue
 
                 d = self._column_obj_to_dict(p.key, p.columns[0])
+
+                if d.pop('primary_key', None):
+                    model_dict['primary_key'] = p.key
+
                 model_dict['properties'].append(d)
 
                 fk = d.pop('foreign_key', {})
@@ -250,7 +254,8 @@ class SqlaModelBuilder(object):
             'name': column_name,
             'nullable': column_obj.nullable,
             'default': column_obj.default,
-            'doc': column_obj.doc or ''
+            'doc': column_obj.doc or '',
+            'primary_key': column_obj.primary_key
         }
         # Check if array
         if sqla_type == 'ARRAY':
@@ -259,10 +264,12 @@ class SqlaModelBuilder(object):
         # Check if foreign key
         if column_obj.foreign_keys:
             fkname = column_obj.foreign_keys.pop().target_fullname
+            table_name, fk_col_name = tuple(fkname.split('.'))
             column_dict.update({
                 'foreign_key': {
-                    'attribute': fkname,
-                    'table': fkname.split('.')[0]
+                    'fkname': column_name,
+                    'column': fk_col_name,
+                    'table': table_name
                 }
             })
 
