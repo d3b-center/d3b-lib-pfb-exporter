@@ -2,7 +2,7 @@
   <img alt="Logo for The Center for Data Driven Discovery" src="https://raw.githubusercontent.com/d3b-center/handbook/master/website/static/img/chop_logo.svg?sanitize=true" width="400px" />
 </p>
 <p align="center">
-  <a href="https://circleci.com/gh/d3b-center/d3b-lib-pfb-exporter"><img src="https://img.shields.io/circleci/project/github/d3b-center/d3b-lib-pfb-exporter.svg?style=for-the-badge"><a>
+  <a href="https://circleci.com/gh/d3b-center/d3b-lib-pfb-exporter"><img src="https://img.shields.io/circleci/build/github/d3b-center/d3b-lib-pfb-exporter?style=for-the-badge&token=2bd3f2036faeb92712d5b59ff49071ca0dc8a7ed"><a>
   <a href="https://github.com/d3b-center/d3b-lib-pfb-exporter/blob/master/LICENSE"><img src="https://img.shields.io/github/license/d3b-center/d3b-lib-pfb-exporter.svg?style=for-the-badge"></a>
 </p>
 
