@@ -55,10 +55,11 @@ from pfb_exporter.config import (
     DEFAULT_METADATA_FILE,
     DEFAULT_AVRO_SCHEMA_NAMESPACE
 )
-from pfb_exporter.utils import setup_logger
+from pfb_exporter.utils import setup_logger, log_time_elapsed
 from pfb_exporter.schema import PfbFileSchema
 from pfb_exporter.entity import PfbMetadataEntity, PfbTableRowEntity
 from pfb_exporter.sqla import SqlaModelBuilder
+from pfb_exporter.db import DbUtils
 
 
 class PfbFileBuilder(object):
@@ -77,7 +78,7 @@ class PfbFileBuilder(object):
 
         :param data_dir: A directory of JSON ND files. Each file is expected
         to contain JSON objects each of which contains row data from a
-        database table. See yield_entities for details
+        database table. See _yield_entities_from_file for details
         :type data_dir: str
         :param db_conn_url: The database connection URL.
         Example: postgresql://postgres:mypassword@127.0.0.1:5432/mydb
@@ -101,18 +102,16 @@ class PfbFileBuilder(object):
             self.output_dir, SQLA_MODELS_FILE
         )
         self.namespace = namespace
-
         self.pfb_file = os.path.join(self.output_dir, DEFAULT_PFB_FILE)
 
-    def build(self, write_pfb=True):
+    @log_time_elapsed
+    def create_pfb_schema(self):
         """
-        Build PFB entities and write to an Avro file
+        Build the PFB File's Avro schema from SQLAlchemy model classes
 
-        Import (or generate and import) the ORM classes
-        Create the PFB File Avro schema
-        Create and yield the PFB Entities
-        Write each PFB Entity as its yielded to the output Avro file,
-        pfb_file
+        If `db_conn_url` is provided, generate the model classes from the
+        db and write them to `models_path`. Then import the SQLAlchemy model
+        classes from the file at `models_path`
         """
         try:
             # Import the SQLAlchemy model classes from file
@@ -123,8 +122,8 @@ class PfbFileBuilder(object):
             )
             self.model_builder.create_and_import_models()
 
-            if not (self.db_conn_url or
-                    self.model_builder.imported_model_classes):
+            # Check that model classes were imported
+            if not self.model_builder.imported_model_classes:
                 raise RuntimeError(
                     'There are 0 models to generate the PFB file. You must '
                     'provide a DB connection URL that can be used to '
@@ -137,19 +136,67 @@ class PfbFileBuilder(object):
                 self.model_builder.orm_models_dict, self.output_dir,
                 self.namespace
             )
+        except Exception as e:
+            self.logger.exception(str(e))
+            self.logger.info(
+                f'❌ Create PFB schema {self.pfb_file_schema} failed!'
+            )
+            exit(1)
+        else:
+            self.logger.info(
+                f'✅ Create PFB schema {self.pfb_file_schema} succeeded!'
+            )
+
+    @log_time_elapsed
+    def build(self, rm_file=True, table_name=None, sql_file=None):
+        """
+        Build PFB entities and write to an Avro file
+
+        1. Create the PFB File Avro schema
+        2. Stream in the data in from JSON ND files or the database.
+        3. Write each PFB Entity as its yielded to the output Avro file
+
+        Input Data: JSON ND
+        -------------------
+        If db_conn_url not provided then assume input data is in data_dir
+        See _yield_row_entities_from_ndjson for details
+
+        Input Data: Database
+        --------------------
+        If db_conn_url is provided then assume input data will be streamed
+        from the database.
+        See _yield_row_entities_from_db for details
+
+        :param rm_file: whether or not to delete the PFB file if it exists
+        :type rm_file: bool
+        :param table_name: forwarded to _yield_row_entities_from_db
+        :type table_name: str
+        :param sql_file: forwarded to _yield_row_entities_from_db
+        :type sql_file: str
+        """
+        try:
+            # Import the SQLAlchemy model classes from file
+            # Build the PFB file Avro schema
+            self.create_pfb_schema()
 
             # Build the PFB file entities and write to the Avro file
-            if write_pfb:
-                self.logger.info(
-                    f'✏️ Begin writing PFB Avro file to {self.pfb_file}'
-                )
-                if os.path.isfile(self.pfb_file):
-                    os.remove(self.pfb_file)
+            if self.db_conn_url:
+                g = self._yield_row_entities_from_db(table_name, sql_file)
+            else:
+                g = self._yield_row_entities_from_ndjson()
 
-                parsed_schema = parse_schema(self.pfb_file_schema.avro_schema)
-                with open(self.pfb_file, 'a+b') as Avro_file:
-                    for ent in self.yield_entities():
-                        writer(Avro_file, parsed_schema, [ent], validator=True)
+            self.logger.info(
+                f'✏️ Begin writing PFB Avro file to {self.pfb_file}'
+            )
+
+            # Remove previous pfb_file
+            if rm_file and os.path.isfile(self.pfb_file):
+                os.remove(self.pfb_file)
+
+            parsed_schema = parse_schema(self.pfb_file_schema.avro_schema)
+            with open(self.pfb_file, 'a+b') as Avro_file:
+                for ent in g:
+                    writer(Avro_file, parsed_schema, [ent], validator=True)
 
         except Exception as e:
             self.logger.exception(str(e))
@@ -159,21 +206,85 @@ class PfbFileBuilder(object):
             self.logger.info(
                 f'✅ Export to PFB file {self.pfb_file} succeeded!'
             )
-            pass
 
-    def yield_entities(self):
+    def yield_entities(self, table_row_entity_generator=None):
         """
         Return a generator over the PFB Entities needed to build a PFB File
 
-        See _yield_metadata_entity and _yield_row_entities for details on
-        entity creation
+        :param table_row_entity_generator: the generator used to produce
+        Table Row PFB Entities
+        :type table_row_entity_generator: generator
         """
-        self.logger.info(
-            f'Begin creating PFB Entities from files in {self.data_dir}'
+        return chain(
+            self._yield_metadata_entity(),
+            table_row_entity_generator or
+            self._yield_row_entities_from_ndjson()
         )
-        return chain(self._yield_metadata_entity(), self._yield_row_entities())
 
-    def _yield_row_entities(self):
+    def _yield_row_entities_from_db(self, table_name=None, sql_file=None):
+        """
+        Build Table Row PFB Entities from rows of data streamed from the
+        database.
+
+        The data to be streamed from the database can be selected via a
+        SQL query in `sql_file`. If the `sql_file` option is used, the
+        `table_name` option must also be provided, since it is used to
+        specify which PFB Entities will be built from resulting rows. The
+        table name is also used as the PFB Entity name.
+
+        Additionally, resulting rows must conform to the table's
+        (specified by `table_name`) schema, since the PFB Entity object
+        properties reflect the table's columns.
+
+        If a query is not provided, then all rows from `table_name` table
+        will be selected.
+
+        :param table_name: name of table in database
+        :type table_name: str
+        :param sql_file: path to a file containing a SQL query
+        :type sql_file: str
+        """
+        db_utils = DbUtils(
+            self.db_conn_url, output_dir=self.output_dir, log=False
+        )
+        # Select subset of database and create PFB Entities conforming to table
+        # table_name schema
+        queries = None
+        if table_name or sql_file:
+            query = db_utils.load_query(
+                table_name=table_name, sql_file_path=sql_file
+            )
+            queries = [(table_name, query)]
+        # Select whole database and create a set of PFB entites for each table
+        elif self.db_conn_url:
+            queries = [
+                (table_name, db_utils.load_query(table_name))
+                for table_name in self.model_builder.orm_models_dict.keys()
+            ]
+        # Insufficient inputs to build PFB from DB
+        if not queries:
+            inputs = {
+                'table_name': table_name,
+                'sql_file': sql_file
+            }
+            raise RuntimeError(
+                'Cannot build PFB from database. Not enough inputs:\n'
+                f'{pformat(inputs)}. You must provide a valid SQL query to '
+                'select data from the database AND the name of the table '
+                'that the query results conform to. OR you can provide '
+                'neither of those, and the all data from the database will be '
+                'selected for PFB file creation.'
+            )
+
+        for table_name, query in queries:
+            for i, r in enumerate(db_utils.yield_row_dicts(query, table_name)):
+                yield PfbTableRowEntity(
+                    i, r,
+                    self.model_builder.orm_models_dict[table_name],
+                    self.namespace
+                ).data
+
+    def _yield_row_entities_from_ndjson(self):
         """
         Create and yield a Table Row PFB Entity dict for each record in a
         properly formatted JSON ND file within the data_dir directory.
@@ -198,6 +309,10 @@ class PfbFileBuilder(object):
         - The rest of the records in the file after the first one must be
           valid JSON objects which conform to the table schema.
         """
+        self.logger.info(
+            f'Begin creating PFB Entities from files in {self.data_dir}'
+        )
+
         def process_first(obj):
             msg = (
                 f'First line of the ndjson file must a string '
