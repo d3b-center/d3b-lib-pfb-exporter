@@ -4,6 +4,7 @@ import logging.handlers
 import importlib
 import time
 import os
+from functools import wraps
 
 from pfb_exporter.config import (
     DEFAULT_LOG_FILENAME,
@@ -21,6 +22,7 @@ DEFAULT_FORMATTER = logging.Formatter(DEFAULT_FORMAT)
 
 def setup_logger(
     log_dir,
+    filename=DEFAULT_LOG_FILENAME,
     overwrite_log=DEFAULT_LOG_OVERWRITE_OPT,
     log_level=DEFAULT_LOG_LEVEL,
 ):
@@ -36,11 +38,12 @@ def setup_logger(
     (critical, error, warning, info, debug, notset)
     """
     # Default file name
-    filename = DEFAULT_LOG_FILENAME
+    filename = filename or DEFAULT_LOG_FILENAME
 
     # Create a new log file named with a timestamp
     if not overwrite_log:
-        filename = "pfb-export-{}.log".format(timestamp())
+        fn, ext = os.path.splitext(filename)
+        filename = f"{fn}-{iso_8601_datetime_str()}.{ext}"
 
     os.makedirs(log_dir, exist_ok=True)
     log_filepath = os.path.join(log_dir, filename)
@@ -62,7 +65,7 @@ def setup_logger(
     return log_filepath
 
 
-def timestamp():
+def iso_8601_datetime_str(dt_object=None):
     """
     Helper to create an ISO 8601 formatted string that represents local time
     and includes the timezone info.
@@ -74,13 +77,11 @@ def timestamp():
     else:
         utc_offset_sec = time.timezone
     utc_offset = datetime.timedelta(seconds=-utc_offset_sec)
-    t = (
-        datetime.datetime.now()
+    return str(
+        dt_object or datetime.datetime.now()
         .replace(tzinfo=datetime.timezone(offset=utc_offset))
         .isoformat()
     )
-
-    return str(t)
 
 
 def seconds_to_hms(t):
@@ -107,3 +108,28 @@ def import_module_from_file(filepath):
     imported_module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(imported_module)
     return imported_module
+
+
+def log_time_elapsed(func):
+    """
+    Decorator to log a method's time elapsed
+    """
+
+    @wraps(func)
+    def wrapper(instance, *args, **kwargs):
+        logger = instance.logger
+
+        # Execute method
+        start = time.time()
+        r = func(instance, *args, **kwargs)
+        end = time.time()
+
+        # Log time elapsed
+        delta_sec = end - start
+        min, sec = divmod(delta_sec, 60)
+        hr, min = divmod(min, 60)
+        logger.info(f"Time elapsed: Sec: {sec} Min: {min} Hours: {hr}")
+
+        return r
+
+    return wrapper
