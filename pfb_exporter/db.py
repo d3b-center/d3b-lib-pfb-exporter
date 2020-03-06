@@ -3,7 +3,7 @@ import logging
 from datetime import datetime
 
 import jsonlines
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, MetaData
 from sqlalchemy.sql import text
 
 from pfb_exporter.config import DEFAULT_OUTPUT_DIR
@@ -39,8 +39,21 @@ class DbUtils(object):
         self.db_conn_url = db_conn_url
         self.output_dir = output_dir
 
-        self.session = create_engine(db_conn_url).connect()
+        self.engine = create_engine(db_conn_url)
+        self.session = self.engine.connect()
         self.logger.info('☑️ Connected to database')
+
+    @log_time_elapsed
+    def db_to_ndjson(self):
+        """
+        Export each table in database to a JSON ND file
+
+        See table_rows_to_ndjson for details
+        """
+        m = MetaData()
+        m.reflect(self.engine)
+        for table_name in m.tables.keys():
+            self.table_rows_to_ndjson(table_name)
 
     @log_time_elapsed
     def table_rows_to_ndjson(self, table_name, sql_file_path=None):

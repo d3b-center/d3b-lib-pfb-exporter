@@ -190,9 +190,9 @@ def create_schema(
     type=click.Path(exists=False, file_okay=False, dir_okay=True)
 )
 @sql_file_opt
-@click.argument('table_name')
+@table_name_opt
 @click.argument('database_url')
-def download(table_name, database_url, sql_file, output_dir):
+def download(database_url, table_name, sql_file, output_dir):
     """
     Execute a SQL query to download data from the database. Write the rows
     to JSON objects in a JSON ND file.
@@ -220,9 +220,14 @@ def download(table_name, database_url, sql_file, output_dir):
         dastabase_url - The connection URL to the database from which
         data will be downloaded
     """
-    DbUtils(database_url, output_dir).table_rows_to_ndjson(
-        table_name, sql_file_path=sql_file
-    )
+    db_utils = DbUtils(database_url, output_dir)
+
+    if not (table_name and sql_file):
+        db_utils.db_to_ndjson()
+    else:
+        db_utils.table_rows_to_ndjson(
+            table_name=table_name, sql_file_path=sql_file
+        )
 
 
 cli.add_command(export)
