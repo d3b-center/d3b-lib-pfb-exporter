@@ -76,9 +76,8 @@ class PfbFileBuilder(object):
         Build a PFB Avro file containing data from a biomedical relational
         database
 
-        :param data_dir: A directory of JSON ND files. Each file is expected
-        to contain JSON objects each of which contains row data from a
-        database table. See _yield_entities_from_file for details
+        :param data_dir: A directory of JSON ND files. See
+        _yield_entities_from_file for details
         :type data_dir: str
         :param db_conn_url: The database connection URL.
         Example: postgresql://postgres:mypassword@127.0.0.1:5432/mydb
@@ -233,13 +232,14 @@ class PfbFileBuilder(object):
         table name is also used as the PFB Entity name.
 
         Additionally, resulting rows must conform to the table's
-        (specified by `table_name`) schema, since the PFB Entity object
-        properties reflect the table's columns.
+        schema, since the PFB Entity object properties reflect the table's
+        columns.
 
-        If a query is not provided, then all rows from `table_name` table
-        will be selected.
+        If a query is not provided, then all rows from the table will be
+        selected.
 
-        :param table_name: name of table in database
+        :param table_name: name of table in database, and type of PFB Entity
+        to build from query results
         :type table_name: str
         :param sql_file: path to a file containing a SQL query
         :type sql_file: str
@@ -316,8 +316,8 @@ class PfbFileBuilder(object):
         def process_first(obj):
             msg = (
                 f'First line of the ndjson file must a string '
-                'specifying the table name from which all subsequent '
-                'JSON records in the file came from (e.g. "biospecimen")'
+                'specifying the name of the table from which all subsequent '
+                'JSON records in the file conform to (e.g. "biospecimen")'
             )
             if not isinstance(obj, str):
                 raise TypeError(msg)
@@ -341,7 +341,7 @@ class PfbFileBuilder(object):
             table_name = None
             with jsonlines.open(pth) as ndjson_reader:
                 for i, obj in enumerate(ndjson_reader):
-                    # Make sure first record has primary key and table name
+                    # Make sure first record has table name
                     if i == 0:
                         table_name = process_first(obj)
                         self.logger.info(f'Detected table name: {table_name}')

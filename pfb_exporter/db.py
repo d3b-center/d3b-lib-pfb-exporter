@@ -1,3 +1,6 @@
+"""
+Helper module to download or stream data from the database
+"""
 import os
 import logging
 from datetime import datetime
@@ -67,6 +70,8 @@ class DbUtils(object):
         Since this is producing a JSON ND file specifically formatted for
         the pfb_exporter.builder.PfbFileBuilder, each row resulting from the
         SQL query must conform to the table's `table_name` schema.
+        The table_name is used to specify which PFB Entities will be built
+        from resulting rows.
 
         The file will be written to <output_dir>/<table_name>.ndjson
         and follow this format:
@@ -105,7 +110,8 @@ class DbUtils(object):
         Load a SQL query from file or create the default query:
         select * from <table_name>.
 
-        Raise a RuntimeError exception if a query cannot be loaded
+        Raise a RuntimeError exception if a query cannot be loaded because
+        neither the table_name nor sql_file_path was provided
         """
         query = None
 
@@ -137,7 +143,7 @@ class DbUtils(object):
         :param query: SQL query to execute
         :type query: str
         :param entity_type: The type of entity (table) each resulting row
-        represents
+        represents.
         """
         basic_types = {int, float, bool, str, bytes}
 

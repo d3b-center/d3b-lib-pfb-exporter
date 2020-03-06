@@ -149,6 +149,8 @@ def db_export(
     (specified by `table_name`) schema. If a query is not provided, then all
     rows from `table_name` table will be selected.
 
+    See pfb_exporter.PfbFileBuilder._yield_row_entities_from_db
+
     \b
     Arguments:
         \b
