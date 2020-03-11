@@ -18,7 +18,7 @@ import logging
 import subprocess
 from copy import deepcopy
 import timeit
-from pprint import pformat, pprint
+from pprint import pformat
 
 from sqlalchemy.inspection import inspect as sqla_inspect
 from sqlalchemy.orm.properties import ColumnProperty
@@ -67,7 +67,7 @@ class SqlaModelBuilder(object):
         """
         # Generate the SQLAlchemy model classes from the database and write
         # to a Python module
-        if self.db_conn_url:
+        if self.db_conn_url and (not os.path.exists(self.models_path)):
             self._generate_models()
 
         # Import the SQLAlchemy model classes
@@ -93,7 +93,7 @@ class SqlaModelBuilder(object):
 
         # Generate SQLAlchemy models
         cmd_str = (
-            f'sqlacodegen {self.db_conn_url} --outfile {self.models_path}'
+            f"sqlacodegen '{self.db_conn_url}' --outfile {self.models_path}"
         )
         self.logger.debug(f'Building SQLAlchemy models:\n{cmd_str}')
 
