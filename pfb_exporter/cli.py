@@ -80,8 +80,18 @@ table_name_opt = click.option(
     )
 )
 
+no_overwrite_opt = click.option(
+    '--no_overwrite',
+    is_flag=True,
+    help=(
+        'A flag indicating that the previous PFB file should not be deleted '
+        'if it exists'
+    )
+)
+
 
 @click.command()
+@no_overwrite_opt
 @namespace_opt
 @pfb_export_output_dir_opt
 @model_paths_opt
@@ -90,7 +100,7 @@ table_name_opt = click.option(
     'data_dir',
     type=click.Path(exists=True, file_okay=True, dir_okay=True))
 def export(
-    data_dir, database_url, models_path, output_dir, namespace
+    data_dir, database_url, models_path, output_dir, namespace, no_overwrite
 ):
     """
     Transform and export data from a relational database into a
@@ -125,17 +135,18 @@ def export(
         models_path=models_path,
         output_dir=output_dir,
         namespace=namespace
-    ).build()
+    ).build(rm_pfb=(not no_overwrite))
 
 
 @click.command('db_export')
+@no_overwrite_opt
 @namespace_opt
 @pfb_export_output_dir_opt
 @sql_file_opt
 @table_name_opt
 @click.argument('database_url')
 def db_export(
-    database_url, table_name, sql_file, output_dir, namespace
+    database_url, table_name, sql_file, output_dir, namespace, no_overwrite
 ):
     """
     Does the same thing as export command except that the input data is
@@ -158,8 +169,14 @@ def db_export(
         data will be streamed
     """
     PfbFileBuilder(
-        '', database_url, '', output_dir, namespace
-    ).build(table_name=table_name, sql_file=sql_file)
+        '',
+        db_conn_url=database_url,
+        models_path=None,
+        output_dir=output_dir,
+        namespace=namespace,
+    ).build(
+        table_name=table_name, sql_file=sql_file, rm_pfb=(not no_overwrite)
+    )
 
 
 @click.command('create_schema')

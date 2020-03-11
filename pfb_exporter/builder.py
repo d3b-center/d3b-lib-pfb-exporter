@@ -44,7 +44,7 @@ import logging
 import json
 import jsonlines
 from itertools import chain
-from pprint import pformat, pprint
+from pprint import pformat
 
 from fastavro import writer, parse_schema
 
@@ -147,7 +147,9 @@ class PfbFileBuilder(object):
             )
 
     @log_time_elapsed
-    def build(self, rm_file=True, table_name=None, sql_file=None):
+    def build(
+        self, table_name=None, sql_file=None, rm_pfb=True
+    ):
         """
         Build PFB entities and write to an Avro file
 
@@ -172,6 +174,9 @@ class PfbFileBuilder(object):
         :type table_name: str
         :param sql_file: forwarded to _yield_row_entities_from_db
         :type sql_file: str
+        :param rm_pfb: A flag indicating whether existing PFB file should be
+        removed
+        :type rm_pfb: bool
         """
         try:
             # Import the SQLAlchemy model classes from file
@@ -189,7 +194,10 @@ class PfbFileBuilder(object):
             )
 
             # Remove previous pfb_file
-            if rm_file and os.path.isfile(self.pfb_file):
+            if rm_pfb and os.path.isfile(self.pfb_file):
+                self.logger.info(
+                    f'Deleting previous PFB File: {self.pfb_file}'
+                )
                 os.remove(self.pfb_file)
 
             parsed_schema = parse_schema(self.pfb_file_schema.avro_schema)
