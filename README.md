@@ -49,7 +49,21 @@ with open('tests/data/pfb_export/pfb.avro', 'rb') as avro_file:
         pprint(record)
 ```
 
-Some other commands/options:
+## Kids First Study to PFB File
+You can run the following utility script to download a study in a Kids First
+Data Service deployment to a PFB file:
+
+```shell
+$ ./kidsfirst/run.sh <KF study id>
+```
+
+The PFB file will be located at:
+
+```shell
+$ ./kidsfirst/<KF study id>/pfb.avro
+```
+
+## More Examples
 
 ```shell
 # Create a PFB file from the given data and generate SQLAlchemy models from db
@@ -96,6 +110,7 @@ tests/data/pfb_export
 ## Supported Databases
 Theoretically, any of the databases supported by SQLAlchemy but this
 has only been tested on a single PostgreSQL database.
+
 
 ## Developers
 
