@@ -1,3 +1,3 @@
-SELECT study.uuid AS uuid, study.created_at AS created_at, study.modified_at AS modified_at, study.visible AS visible, study.data_access_authority AS data_access_authority, study.external_id AS external_id, study.version AS version, study.name AS name, study.short_name AS short_name, study.attribution AS attribution, study.release_status AS release_status, study.investigator_id AS investigator_id, study.kf_id AS kf_id 
+SELECT study.uuid, study.created_at, study.modified_at, study.visible, study.data_access_authority, study.external_id, study.version, study.name, study.short_name, study.attribution, study.release_status, study.investigator_id, study.kf_id 
 FROM study 
 WHERE study.kf_id = 'REPLACE_STUDY_ID'

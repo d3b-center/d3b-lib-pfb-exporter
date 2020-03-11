@@ -1,3 +1,3 @@
-SELECT biospecimen_diagnosis.uuid AS uuid, biospecimen_diagnosis.created_at AS created_at, biospecimen_diagnosis.modified_at AS modified_at, biospecimen_diagnosis.visible AS visible, biospecimen_diagnosis.diagnosis_id AS diagnosis_id, biospecimen_diagnosis.biospecimen_id AS biospecimen_id, biospecimen_diagnosis.external_id AS external_id, biospecimen_diagnosis.kf_id AS kf_id 
+SELECT biospecimen_diagnosis.uuid, biospecimen_diagnosis.created_at, biospecimen_diagnosis.modified_at, biospecimen_diagnosis.visible, biospecimen_diagnosis.diagnosis_id, biospecimen_diagnosis.biospecimen_id, biospecimen_diagnosis.external_id, biospecimen_diagnosis.kf_id 
 FROM biospecimen_diagnosis JOIN biospecimen ON biospecimen.kf_id = biospecimen_diagnosis.biospecimen_id JOIN participant ON participant.kf_id = biospecimen.participant_id 
 WHERE participant.study_id = 'REPLACE_STUDY_ID'
