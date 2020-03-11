@@ -1,0 +1,3 @@
+SELECT participant.uuid AS uuid, participant.created_at AS created_at, participant.modified_at AS modified_at, participant.visible AS visible, participant.external_id AS external_id, participant.family_id AS family_id, participant.is_proband AS is_proband, participant.race AS race, participant.ethnicity AS ethnicity, participant.gender AS gender, participant.affected_status AS affected_status, participant.diagnosis_category AS diagnosis_category, participant.species AS species, participant.study_id AS study_id, participant.alias_group_id AS alias_group_id, participant.kf_id AS kf_id 
+FROM participant 
+WHERE participant.study_id = 'REPLACE_STUDY_ID'

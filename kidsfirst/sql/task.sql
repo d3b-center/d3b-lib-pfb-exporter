@@ -1,0 +1,3 @@
+SELECT task.uuid AS uuid, task.created_at AS created_at, task.modified_at AS modified_at, task.visible AS visible, task.external_task_id AS external_task_id, task.name AS name, task.cavatica_app_id AS cavatica_app_id, task.kf_id AS kf_id 
+FROM task JOIN task_genomic_file ON task.kf_id = task_genomic_file.task_id JOIN genomic_file ON genomic_file.kf_id = task_genomic_file.genomic_file_id JOIN biospecimen_genomic_file ON genomic_file.kf_id = biospecimen_genomic_file.genomic_file_id JOIN biospecimen ON biospecimen.kf_id = biospecimen_genomic_file.biospecimen_id JOIN participant ON participant.kf_id = biospecimen.participant_id 
+WHERE participant.study_id = 'REPLACE_STUDY_ID' GROUP BY task.kf_id

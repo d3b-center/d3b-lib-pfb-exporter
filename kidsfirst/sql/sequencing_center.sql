@@ -1,0 +1,3 @@
+SELECT sequencing_center.uuid AS uuid, sequencing_center.created_at AS created_at, sequencing_center.modified_at AS modified_at, sequencing_center.visible AS visible, sequencing_center.external_id AS external_id, sequencing_center.name AS name, sequencing_center.kf_id AS kf_id 
+FROM sequencing_center JOIN biospecimen ON sequencing_center.kf_id = biospecimen.sequencing_center_id JOIN participant ON participant.kf_id = biospecimen.participant_id 
+WHERE participant.study_id = 'REPLACE_STUDY_ID' GROUP BY sequencing_center.kf_id

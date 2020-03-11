@@ -1,0 +1,3 @@
+SELECT study_file.uuid AS uuid, study_file.latest_did AS latest_did, study_file.created_at AS created_at, study_file.modified_at AS modified_at, study_file.visible AS visible, study_file.external_id AS external_id, study_file.study_id AS study_id, study_file.availability AS availability, study_file.data_type AS data_type, study_file.file_format AS file_format, study_file.kf_id AS kf_id 
+FROM study_file 
+WHERE study_file.study_id = 'REPLACE_STUDY_ID'
