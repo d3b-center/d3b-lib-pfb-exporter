@@ -8,8 +8,15 @@
 
 set -eo pipefail
 
-study_id=${1:-REPLACE_STUDY_ID}
+study_id="$1"
 script_dir=$(dirname $0)
+output_dir="$script_dir/$study_id"
+
+if [[ -z $study_id ]];
+then
+    echo "You must provide the study id for the script to continue. Aborting!"
+    exit 1
+fi
 
 echo "🏭 Start Kids First PFB file export. Stream $study_id data into PFB file"
 
@@ -29,11 +36,11 @@ do
     pfbe db_export "$KF_DATASERVICE_DB_URL" \
                     -t "$entity" \
                     -s "$fp" \
-                    -o $script_dir/pfb_export \
+                    -o "$output_dir" \
                     --no_overwrite
     
     log_file="$entity-pfb_export.log"
-    mv $script_dir/pfb_export/logs/pfb_export.log $script_dir/pfb_export/logs/$log_file
+    mv $output_dir/logs/pfb_export.log $output_dir/logs/$log_file
 done
 
 # Remove temporary SQL files
