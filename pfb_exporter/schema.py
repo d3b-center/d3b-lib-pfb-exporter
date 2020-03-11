@@ -99,10 +99,10 @@ class PfbFileSchema(object):
         self.output_dir = output_dir
         self.namespace = namespace
         self.avro_template_file = PFB_SCHEMA_TEMPLATE
+        self.avro_schema_file = os.path.join(
+            self.output_dir, DEFAULT_PFB_SCHEMA_FILE
+        )
         self.metadata_schema = PfbMetadataEntitySchema()
-        self.table_row_schemas = self._build_table_row_schemas()
-        self.avro_schema = self.build()
-        self._write_output()
 
     def build(self):
         """
@@ -110,6 +110,13 @@ class PfbFileSchema(object):
         schema and the table row PFB entity schemas.
         """
         self.logger.info('Building avro schema for PFB File')
+
+        # Build PfbTableRowEntitySchema objects from the orm_models_dict
+        self.table_row_schemas = [
+            PfbTableRowEntitySchema(model_dict)
+            for model_dict in self.orm_models_dict.values()
+        ]
+
         with open(self.avro_template_file, 'r') as json_file:
             pfb_schema = json.load(json_file)
 
@@ -141,24 +148,15 @@ class PfbFileSchema(object):
             )
             raise e
 
-        return pfb_schema
+        self.avro_schema = pfb_schema
+        self._write_output()
 
-    def _build_table_row_schemas(self):
-        """
-        Build PfbTableRowEntitySchema objects from the orm_models_dict
-        """
-        return [
-            PfbTableRowEntitySchema(model_dict)
-            for model_dict in self.orm_models_dict.values()
-        ]
+        return pfb_schema
 
     def _write_output(self):
         """
         Write the avro schema to a JSON file
         """
-        self.avro_schema_file = os.path.join(
-            self.output_dir, DEFAULT_PFB_SCHEMA_FILE
-        )
         if self.avro_schema:
             self.logger.info(
                 '✏️ Writing avro schema for PFB File to '

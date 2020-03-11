@@ -112,6 +112,7 @@ class PfbFileBuilder(object):
         db and write them to `models_path`. Then import the SQLAlchemy model
         classes from the file at `models_path`
         """
+        self.pfb_file_schema = None
         try:
             # Import the SQLAlchemy model classes from file
             self.model_builder = SqlaModelBuilder(
@@ -135,15 +136,18 @@ class PfbFileBuilder(object):
                 self.model_builder.orm_models_dict, self.output_dir,
                 self.namespace
             )
+            self.pfb_file_schema.build()
+
         except Exception as e:
             self.logger.exception(str(e))
             self.logger.info(
-                f'❌ Create PFB schema {self.pfb_file_schema} failed!'
+                f'❌ Create PFB schema failed!'
             )
             exit(1)
         else:
             self.logger.info(
-                f'✅ Create PFB schema {self.pfb_file_schema} succeeded!'
+                '✅ Create PFB schema '
+                f'{self.pfb_file_schema.avro_schema_file}  succeeded!'
             )
 
     @log_time_elapsed
@@ -178,6 +182,7 @@ class PfbFileBuilder(object):
         removed
         :type rm_pfb: bool
         """
+        self.logger.info('🏭 Begin building PFB file')
         try:
             # Import the SQLAlchemy model classes from file
             # Build the PFB file Avro schema
