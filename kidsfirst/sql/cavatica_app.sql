@@ -1,0 +1,3 @@
+SELECT cavatica_app.uuid, cavatica_app.created_at, cavatica_app.modified_at, cavatica_app.visible, cavatica_app.external_cavatica_app_id, cavatica_app.name, cavatica_app.revision, cavatica_app.github_commit_url, cavatica_app.kf_id 
+FROM cavatica_app JOIN task ON cavatica_app.kf_id = task.cavatica_app_id JOIN task_genomic_file ON task.kf_id = task_genomic_file.task_id JOIN genomic_file ON genomic_file.kf_id = task_genomic_file.genomic_file_id JOIN biospecimen_genomic_file ON genomic_file.kf_id = biospecimen_genomic_file.genomic_file_id JOIN biospecimen ON biospecimen.kf_id = biospecimen_genomic_file.biospecimen_id JOIN participant ON participant.kf_id = biospecimen.participant_id 
+WHERE participant.study_id = 'REPLACE_STUDY_ID' GROUP BY cavatica_app.kf_id

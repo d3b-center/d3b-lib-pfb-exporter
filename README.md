@@ -36,7 +36,36 @@ $ pfbe --help
 
 # Create a PFB file from the given data and SQLAlchemy models
 $ pfbe export tests/data/input -m tests/data/models.py -o tests/data/pfb_export
+```
 
+Read the data back out of the Avro file:
+
+```python
+from pprint import pprint
+from fastavro import reader
+
+with open('tests/data/pfb_export/pfb.avro', 'rb') as avro_file:
+    for record in reader(avro_file):
+        pprint(record)
+```
+
+## Kids First Study to PFB File
+You can run the following utility script to download a study in a Kids First
+Data Service deployment to a PFB file:
+
+```shell
+$ ./kidsfirst/run.sh <KF study id>
+```
+
+The PFB file will be located at:
+
+```shell
+$ ./kidsfirst/<KF study id>/pfb.avro
+```
+
+## More Examples
+
+```shell
 # Create a PFB file from the given data and generate SQLAlchemy models from db
 $ pfbe export tests/data/input -d $MY_DB_CONN_URL -m tests/data/models.py -o tests/data/pfb_export
 
@@ -46,6 +75,23 @@ $ pfbe create_schema -m tests/data/models.py -o tests/data/pfb_export
 # Create just the PFB schema but first generate the SQLAlchemy models from db
 $ pfbe create_schema -d $MY_DB_CONN_URL -m tests/data/models.py -o tests/data/pfb_export
 ```
+
+Download data from your database to JSON ND files. Each JSON ND file
+is expected to contain row data that conforms to a single table's schema
+
+```shell
+$ pfbe download "$MY_DB_CONN_URL" -o data/input
+```
+
+Stream the database into a PFB file
+```shell
+# Stream whole database to PFB file
+$ pfbe db_export $MY_DB_CONN_URL -o data/pfb_export
+
+# Select a subset of data from the database and build one type of PFB entity
+$ pfbe db_export $MY_DB_CONN_URL -t biospecimen -s /path/to/sql_file -o data/pfb_export
+```
+
 ## Outputs
 
 The output contains the generated PFB file, logs, and other files for debugging
@@ -64,6 +110,7 @@ tests/data/pfb_export
 ## Supported Databases
 Theoretically, any of the databases supported by SQLAlchemy but this
 has only been tested on a single PostgreSQL database.
+
 
 ## Developers
 

@@ -1,0 +1,3 @@
+SELECT participant.uuid, participant.created_at, participant.modified_at, participant.visible, participant.external_id, participant.family_id, participant.is_proband, participant.race, participant.ethnicity, participant.gender, participant.affected_status, participant.diagnosis_category, participant.species, participant.study_id, participant.alias_group_id, participant.kf_id 
+FROM participant 
+WHERE participant.study_id = 'REPLACE_STUDY_ID'

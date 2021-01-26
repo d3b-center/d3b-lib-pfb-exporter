@@ -1,0 +1,3 @@
+SELECT family_relationship.uuid, family_relationship.created_at, family_relationship.modified_at, family_relationship.visible, family_relationship.external_id, family_relationship.participant1_id, family_relationship.participant2_id, family_relationship.participant1_to_participant2_relation, family_relationship.participant2_to_participant1_relation, family_relationship.source_text_notes, family_relationship.kf_id 
+FROM family_relationship JOIN participant ON family_relationship.participant1_id = participant.kf_id OR family_relationship.participant2_id = participant.kf_id 
+WHERE participant.study_id = 'REPLACE_STUDY_ID' GROUP BY family_relationship.kf_id

@@ -1,0 +1,3 @@
+SELECT read_group_genomic_file.uuid, read_group_genomic_file.created_at, read_group_genomic_file.modified_at, read_group_genomic_file.visible, read_group_genomic_file.read_group_id, read_group_genomic_file.genomic_file_id, read_group_genomic_file.external_id, read_group_genomic_file.kf_id 
+FROM read_group_genomic_file JOIN genomic_file ON genomic_file.kf_id = read_group_genomic_file.genomic_file_id JOIN biospecimen_genomic_file ON genomic_file.kf_id = biospecimen_genomic_file.genomic_file_id JOIN biospecimen ON biospecimen.kf_id = biospecimen_genomic_file.biospecimen_id JOIN participant ON participant.kf_id = biospecimen.participant_id 
+WHERE participant.study_id = 'REPLACE_STUDY_ID' GROUP BY read_group_genomic_file.kf_id

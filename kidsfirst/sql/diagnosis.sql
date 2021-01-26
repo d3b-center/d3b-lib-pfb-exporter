@@ -1,0 +1,3 @@
+SELECT diagnosis.uuid, diagnosis.created_at, diagnosis.modified_at, diagnosis.visible, diagnosis.external_id, diagnosis.source_text_diagnosis, diagnosis.diagnosis_category, diagnosis.source_text_tumor_location, diagnosis.age_at_event_days, diagnosis.mondo_id_diagnosis, diagnosis.icd_id_diagnosis, diagnosis.uberon_id_tumor_location, diagnosis.ncit_id_diagnosis, diagnosis.spatial_descriptor, diagnosis.participant_id, diagnosis.kf_id 
+FROM participant JOIN diagnosis ON participant.kf_id = diagnosis.participant_id 
+WHERE participant.study_id = 'REPLACE_STUDY_ID'

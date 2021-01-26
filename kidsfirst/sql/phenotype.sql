@@ -1,0 +1,3 @@
+SELECT phenotype.uuid, phenotype.created_at, phenotype.modified_at, phenotype.visible, phenotype.external_id, phenotype.source_text_phenotype, phenotype.hpo_id_phenotype, phenotype.snomed_id_phenotype, phenotype.observed, phenotype.age_at_event_days, phenotype.participant_id, phenotype.kf_id 
+FROM participant JOIN phenotype ON participant.kf_id = phenotype.participant_id 
+WHERE participant.study_id = 'REPLACE_STUDY_ID'
